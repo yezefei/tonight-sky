@@ -1,0 +1,16 @@
+{
+  "appid": "wx6d0eedae0b4a34db",
+  "projectname": "今晚先睡",
+  "compileType": "miniprogram",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "libVersion": "latest",
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "minified": true,
+    "postcss": true,
+    "urlCheck": false,
+    "ignoreUploadUnusedFiles": true
+  },
+  "description": "睡不着的时候，把今晚的事放在天上。"
+}

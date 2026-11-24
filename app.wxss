@@ -1,0 +1,101 @@
+/* 今晚先睡 · 全局样式
+   色板：--ink #eef0f7 / --muted #8b90a8 / --faint #525771 / 星 #fff6e3 / 金 #ffd79a /  accent #b9c3ff */
+page {
+  height: 100%;
+  background: #05060e;
+  color: #eef0f7;
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+.serif { font-family: "Songti SC", "STSong", serif; }
+
+/* 重置小程序 button 默认样式（否则默认块级、带边框和边距，布局全乱） */
+button {
+  margin: 0; padding: 0; min-height: 0; width: auto;
+  display: inline-block; background: none; border: none; border-radius: 0;
+  color: inherit; font-size: inherit; line-height: normal; text-align: inherit;
+}
+button::after { border: none; }
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding: 0 56rpx calc(env(safe-area-inset-bottom) + 20rpx);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(1200rpx 700rpx at 50% -20%, #1d2440 0%, rgba(29,36,64,0) 55%),
+    radial-gradient(900rpx 600rpx at 85% 110%, #191233 0%, rgba(25,18,51,0) 50%),
+    #05060e;
+}
+
+.greet { font-size: 26rpx; letter-spacing: 0.4em; color: #525771; margin-bottom: 44rpx; }
+.h1 { font-family: "Songti SC", "STSong", serif; font-size: 64rpx; line-height: 1.6; letter-spacing: 0.06em; }
+.h2 { font-family: "Songti SC", "STSong", serif; font-size: 44rpx; line-height: 1.7; letter-spacing: 0.05em; margin-top: 16rpx; }
+.sub { color: #8b90a8; font-size: 29rpx; line-height: 2.2; margin-top: 28rpx; }
+.em { color: #ffd79a; }
+.tiny { color: #525771; font-size: 22rpx; line-height: 2; }
+
+.btn-main {
+  display: block; width: 100%; padding: 30rpx 0; border-radius: 999rpx; border: none;
+  background: rgba(255,246,227,.92); color: #1d2440; text-align: center;
+  font-size: 30rpx; letter-spacing: 0.2em; font-family: "Songti SC", "STSong", serif;
+}
+.btn-main[disabled], .btn-main.dis { opacity: .35; }
+/* 点按反馈（view 按钮用） */
+.btn-hover { opacity: .78; }
+.tap { opacity: .5; }
+.btn-ghost {
+  display: block; width: 100%; padding: 28rpx 0; border-radius: 999rpx; margin-top: 20rpx;
+  background: none; border: 1rpx solid rgba(255,255,255,.14); color: #eef0f7; text-align: center;
+  font-size: 29rpx; letter-spacing: 0.16em;
+}
+.link-quiet {
+  display: block; width: 100%;
+  background: none; border: none; color: #525771; font-size: 24rpx;
+  padding: 20rpx 0; letter-spacing: .06em; text-align: center;
+}
+/* 返回键：top/height 由页面内联传入（与胶囊按钮垂直居中对齐） */
+.back {
+  position: absolute; left: 24rpx; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  width: 72rpx; background: none; border: none; color: #8b90a8; font-size: 52rpx; padding: 0;
+}
+.spacer { flex: 1; min-height: 72rpx; }
+.foot-note { text-align: center; color: #525771; font-size: 22rpx; line-height: 2; padding: 32rpx 0 52rpx; letter-spacing: .05em; }
+.starter-link { color: #525771; font-size: 24rpx; border-bottom: 1rpx dotted #525771; padding-bottom: 2rpx; }
+
+/* 轻提示 */
+.toast {
+  position: fixed; left: 50%; bottom: 8vh; transform: translateX(-50%) translateY(10rpx);
+  max-width: 80%; padding: 22rpx 34rpx; border-radius: 28rpx; text-align: center;
+  background: rgba(18,22,42,.94); border: 1rpx solid rgba(255,255,255,.08); color: #8b90a8;
+  font-size: 26rpx; line-height: 1.9; opacity: 0; pointer-events: none;
+  transition: opacity .5s ease, transform .5s ease; z-index: 90;
+}
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 底部浮层（星星详情 / 星回共用） */
+.mask { position: fixed; inset: 0; background: rgba(3,4,10,.6); opacity: 0; pointer-events: none; transition: .4s; z-index: 70; }
+.mask.on { opacity: 1; pointer-events: auto; }
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; transform: translateY(105%);
+  z-index: 71; background: rgba(16,18,32,.97); border-top: 1rpx solid rgba(255,255,255,.08);
+  border-radius: 52rpx 52rpx 0 0; padding: 56rpx 52rpx 80rpx;
+  transition: transform .5s cubic-bezier(.3,.9,.3,1);
+}
+.sheet.on { transform: translateY(0); }
+.sheet .meta { font-size: 24rpx; color: #525771; letter-spacing: .1em; margin-bottom: 28rpx; }
+.sheet .meta .gold-tag { color: #ffd79a; }
+.sheet .txt { font-size: 32rpx; line-height: 2.2; }
+.sheet .turn {
+  display: block; margin-top: 44rpx; width: 100%; background: none;
+  border: 1rpx solid rgba(255,215,154,.35); border-radius: 999rpx;
+  color: #ffd79a; font-size: 28rpx; letter-spacing: .14em; padding: 28rpx;
+  text-align: center; font-family: "Songti SC", "STSong", serif;
+}
+.sheet .del { display: inline-block; margin-top: 36rpx; background: none; border: none; color: #525771; font-size: 25rpx; padding: 8rpx 0; }
+.rv-ask { margin-top: 44rpx; font-family: "Songti SC", "STSong", serif; font-size: 34rpx; letter-spacing: .06em; }
+.rv-more { margin-top: 28rpx; font-size: 27rpx; line-height: 2.1; color: #8b90a8; border-left: 2rpx solid rgba(255,255,255,.08); padding-left: 24rpx; }
+.rv-more .when { display: block; font-size: 22rpx; color: #525771; letter-spacing: .08em; }

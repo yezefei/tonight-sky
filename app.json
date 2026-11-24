@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/sky/sky",
+    "pages/card/card",
+    "pages/receive/receive",
+    "pages/write/write",
+    "pages/echo/echo",
+    "pages/calm/calm"
+  ],
+  "window": {
+    "navigationStyle": "custom",
+    "backgroundColor": "#05060e",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,10 @@
+<view class="page" style="padding-top:{{navTop}}px">
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+  <view class="sub" style="margin-top:6vh">{{line}}</view>
+  <view class="sub">跟着这点光，慢慢呼吸就好。</view>
+  <view class="orb-wrap"><view class="orb {{breath}}"></view></view>
+  <view class="breath-txt">{{breathTxt}}</view>
+  <view class="spacer"></view>
+  <view class="link-quiet" hover-class="tap" bindtap="goBack">我差不多了</view>
+  <view style="height:68rpx"></view>
+</view>

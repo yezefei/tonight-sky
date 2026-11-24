@@ -1,0 +1,65 @@
+<view class="page" style="padding-top:{{navTop}}px">
+
+  <!-- 加载中 -->
+  <view wx:if="{{phase === 'loading'}}" class="center-note">正在摘下这颗星……</view>
+
+  <!-- 迷路兜底 -->
+  <block wx:elif="{{phase === 'gone' || phase === 'error'}}">
+    <view class="spacer"></view>
+    <view class="h2">这颗星星迷路了。</view>
+    <view class="sub">{{phase === 'gone' ? '它可能已经回到了天上，或者链接放太久了。' : '今晚的信号不太好，等一会儿再试试。'}}</view>
+    <view class="spacer"></view>
+    <view class="btn-main" hover-class="btn-hover" bindtap="goSky">去 我 的 夜 空</view>
+    <view style="height:60rpx"></view>
+  </block>
+
+  <!-- 收到星 -->
+  <block wx:elif="{{phase === 'star'}}">
+    <view class="greet" style="margin-top:6vh">{{mine ? '这 是 你 送 出 的 星' : '有 人 送 你 一 颗 星'}}</view>
+    <view class="h2">{{mine ? '它还在等回音。' : '今晚，TA 想让你知道。'}}</view>
+
+    <view class="star-card">
+      <view class="star-text">{{text}}</view>
+    </view>
+
+    <!-- 已有回音（发送者视角 / 已回复后再次打开） -->
+    <view wx:if="{{replyText}}" class="reply-card">
+      <view class="reply-meta">回音</view>
+      <view class="reply-text">{{replyText}}</view>
+    </view>
+
+    <block wx:if="{{!mine}}">
+      <!-- 收下 -->
+      <view class="keep-row {{kept ? 'kept' : ''}}" hover-class="tap" bindtap="keep">
+        {{kept ? '✦ 已收进你的夜空' : '收 下 这 颗 星'}}
+      </view>
+
+      <!-- 回一句话 -->
+      <view class="sub" style="margin-top:48rpx">想对 TA 说点什么吗？只有 TA 能看到。</view>
+      <view class="reply-box">
+        <textarea class="reply-input" placeholder="一句就好，比如：我也是" placeholder-class="ph"
+          value="{{reply}}" bindinput="onReplyInput" maxlength="2000" auto-height></textarea>
+      </view>
+      <view style="height:24rpx"></view>
+      <view class="btn-main {{canReply && !sending ? '' : 'dis'}}" hover-class="btn-hover" bindtap="sendReply">
+        {{sending ? '寄 出 中 …' : '寄 出 回 音'}}
+      </view>
+    </block>
+
+    <view class="spacer"></view>
+    <view class="link-quiet" hover-class="tap" bindtap="goSky">我也想说说我今晚的事</view>
+    <view style="height:60rpx"></view>
+  </block>
+
+  <!-- 寄出回音后 -->
+  <block wx:elif="{{phase === 'thanked'}}">
+    <view class="spacer"></view>
+    <view class="h2">你的话，已经系在这颗星上了。</view>
+    <view class="sub">TA 打开夜空的时候就会看到。</view>
+    <view class="spacer"></view>
+    <view class="btn-main" hover-class="btn-hover" bindtap="goSky">我 也 想 说 说 今 晚 的 事</view>
+    <view style="height:60rpx"></view>
+  </block>
+
+  <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
+</view>

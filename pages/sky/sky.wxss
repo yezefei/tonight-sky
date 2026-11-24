@@ -1,0 +1,122 @@
+.sky-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
+.bg-star { position: absolute; width: 4rpx; height: 4rpx; border-radius: 50%; background: #cdd3ee; opacity: .22; animation: tw 7s ease-in-out infinite; }
+.sky-star {
+  position: absolute; border-radius: 50%; pointer-events: auto;
+  background: #fff6e3;
+  box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 22px 6px rgba(255,246,227,.18);
+  animation: tw 5s ease-in-out infinite;
+}
+@keyframes tw { 50% { opacity: .45; } }
+.sky-star.fresh { animation: born 2.6s ease-out forwards; z-index: 5; }
+@keyframes born {
+  0% { box-shadow: 0 0 0 0 rgba(255,246,227,.9); opacity: 0; transform: scale(.2); }
+  25% { opacity: 1; transform: scale(1.9); box-shadow: 0 0 30px 10px rgba(255,246,227,.8), 0 0 90px 40px rgba(185,195,255,.35); }
+  60% { transform: scale(1); }
+  100% { box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 22px 6px rgba(255,246,227,.18); }
+}
+.sky-star.gold { background: #ffd79a; box-shadow: 0 0 8px 2px rgba(255,215,154,.75), 0 0 26px 8px rgba(255,215,154,.30); }
+.sky-star.turning { animation: turnGold 2.2s ease-out forwards; z-index: 5; }
+@keyframes turnGold {
+  0% { transform: scale(1); }
+  30% { transform: scale(2.1); background: #ffd79a; box-shadow: 0 0 26px 10px rgba(255,215,154,.9), 0 0 80px 30px rgba(255,215,154,.4); }
+  100% { transform: scale(1); background: #ffd79a; box-shadow: 0 0 8px 2px rgba(255,215,154,.75), 0 0 26px 8px rgba(255,215,154,.30); }
+}
+.sky-star.beckon { animation: beckon 4.5s ease-in-out infinite; }
+@keyframes beckon {
+  0%, 100% { box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 30px 8px rgba(255,215,154,.10); }
+  50% { box-shadow: 0 0 8px 2px rgba(255,246,227,.7), 0 0 52px 16px rgba(255,215,154,.30); }
+}
+
+/* 恒星：首屏唯一的可点星 */
+.sun { position: absolute; right: 48rpx; z-index: 3; display: flex; flex-direction: column; align-items: center; }
+.sun-dot {
+  width: 72rpx; height: 72rpx; border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fff9ea, #ffd79a 55%, rgba(255,215,154,0) 78%);
+  box-shadow: 0 0 24rpx 8rpx rgba(255,215,154,.5), 0 0 90rpx 30rpx rgba(255,215,154,.18);
+  animation: sunPulse 5s ease-in-out infinite;
+}
+@keyframes sunPulse {
+  0%, 100% { box-shadow: 0 0 24rpx 8rpx rgba(255,215,154,.5), 0 0 90rpx 30rpx rgba(255,215,154,.18); }
+  50% { box-shadow: 0 0 30rpx 12rpx rgba(255,215,154,.62), 0 0 120rpx 44rpx rgba(255,215,154,.26); }
+}
+.sun-cap { margin-top: 18rpx; font-size: 20rpx; color: #8b90a8; letter-spacing: .16em; }
+
+/* 首屏星点纯装饰 */
+.sky-star.deco { pointer-events: none; }
+
+/* 恒星轨道视图 */
+.orbit-view {
+  position: fixed; inset: 0; z-index: 60;
+  background:
+    radial-gradient(1200rpx 700rpx at 50% -20%, #1d2440 0%, rgba(29,36,64,0) 55%),
+    radial-gradient(900rpx 600rpx at 85% 110%, #191233 0%, rgba(25,18,51,0) 50%),
+    #05060e;
+  opacity: 0; pointer-events: none; transition: opacity .45s ease;
+}
+.orbit-view.on { opacity: 1; pointer-events: auto; }
+.orbit-back { color: #8b90a8; }
+.orbit-stage { position: absolute; left: 50%; top: 46%; width: 0; height: 0; }
+.sun-core {
+  position: absolute; left: 0; top: 0; transform: translate(-50%, -50%);
+  width: 84rpx; height: 84rpx; border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fff9ea, #ffd79a 55%, rgba(255,215,154,0) 80%);
+  box-shadow: 0 0 30rpx 12rpx rgba(255,215,154,.55), 0 0 130rpx 50rpx rgba(255,215,154,.22);
+  animation: sunPulse 5s ease-in-out infinite;
+}
+.orbit-ring {
+  position: absolute; left: 0; top: 0; transform: translate(-50%, -50%);
+  border: 1rpx solid rgba(255,255,255,.055); border-radius: 50%;
+  animation-name: orbitSpin; animation-timing-function: linear; animation-iteration-count: infinite;
+}
+@keyframes orbitSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.orbit-star {
+  position: absolute; transform: translate(-50%, -50%);
+  border-radius: 50%; background: #fff6e3;
+  box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 22px 6px rgba(255,246,227,.18);
+  animation: tw 5s ease-in-out infinite;
+}
+.orbit-star.gold { background: #ffd79a; box-shadow: 0 0 8px 2px rgba(255,215,154,.75), 0 0 26px 8px rgba(255,215,154,.30); }
+.orbit-star.beckon { animation: beckon 4.5s ease-in-out infinite; }
+.orbit-hint {
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 88rpx);
+  text-align: center; color: #525771; font-size: 24rpx; letter-spacing: .12em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring { animation-duration: 9999s; }
+  .sun-dot, .sun-core { animation: none; }
+}
+
+.hero { margin-top: 14vh; position: relative; z-index: 2; }
+
+.after-release { display: none; text-align: center; margin-bottom: 20rpx; animation: rise 1.2s ease; }
+.after-release.on { display: block; }
+.ar-txt { color: #8b90a8; font-size: 28rpx; line-height: 2; margin-bottom: 8rpx; }
+@keyframes rise { from { opacity: 0; transform: translateY(24rpx); } to { opacity: 1; transform: none; } }
+
+.revisit-banner {
+  display: block; width: 100%; margin-bottom: 24rpx; padding: 26rpx 32rpx;
+  background: rgba(255,215,154,.05); border: 1rpx solid rgba(255,215,154,.20);
+  border-radius: 32rpx; color: rgba(255,215,154,.88);
+  font-size: 27rpx; letter-spacing: .10em; text-align: center;
+  font-family: "Songti SC", "STSong", serif; animation: rise 1.2s ease;
+}
+
+/* 送星按钮与回音 */
+.turn.send { border-color: rgba(185,195,255,.35); color: #b9c3ff; margin-top: 20rpx; }
+.reply-card { margin-top: 32rpx; border-left: 2rpx solid rgba(255,215,154,.4); padding-left: 24rpx; }
+.reply-meta { font-size: 22rpx; color: #ffd79a; letter-spacing: .2em; margin-bottom: 12rpx; }
+.reply-text { font-size: 30rpx; line-height: 2; color: #8b90a8; }
+
+.rv-input {
+  width: 100%; min-height: 200rpx; box-sizing: border-box;
+  background: rgba(255,255,255,.04); border: 1rpx solid rgba(255,255,255,.08);
+  border-radius: 24rpx; padding: 24rpx; color: #eef0f7; font-size: 30rpx; line-height: 1.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-star, .sky-star { animation-duration: .01s; animation-iteration-count: 1; }
+  .sky-star.turning { animation-duration: .8s; animation-iteration-count: 1; }
+}

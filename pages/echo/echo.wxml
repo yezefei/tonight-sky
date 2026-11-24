@@ -1,0 +1,19 @@
+<view class="page" style="padding-top:{{navTop}}px">
+  <view style="height:8vh"></view>
+  <view class="h2">谢谢你，愿意说出来。</view>
+  <view class="quote-card" id="quoteCard" style="opacity:{{cardOpacity}}">
+    <view wx:if="{{tag}}" class="tag">{{tag}}</view>
+    <view class="quote-text">{{text}}</view>
+  </view>
+  <view class="sub">这件事压在身上，一定很重。</view>
+  <view class="sub">今晚不用想出办法，也不用现在就想明白。</view>
+  <view class="sub">你已经说出来了——<text class="em">让它去天上待一会儿吧。</text></view>
+
+  <!-- 释放动画的替身 -->
+  <view wx:if="{{ghost.show}}" class="ghost" style="left:{{ghost.left}}px;top:{{ghost.top}}px;width:{{ghost.width}}px;transform:{{ghost.transform}};opacity:{{ghost.opacity}};filter:blur({{ghost.blur}}px)">{{text}}</view>
+
+  <view class="spacer"></view>
+  <view class="btn-main {{releasing ? 'dis' : ''}}" hover-class="btn-hover" bindtap="release">放 它 走</view>
+  <view class="link-quiet" hover-class="tap" bindtap="goBack">我还想再说一点</view>
+  <view style="height:60rpx"></view>
+</view>

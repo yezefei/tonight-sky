@@ -1,0 +1,11 @@
+.write-box { margin-top: 40rpx; background: rgba(255,255,255,.04); border: 1rpx solid rgba(255,255,255,.08); border-radius: 28rpx; padding: 28rpx; }
+.worry { width: 100%; min-height: 280rpx; color: #eef0f7; font-size: 32rpx; line-height: 2; }
+.ph { color: #525771; }
+.chips { display: flex; flex-wrap: wrap; margin-top: 20rpx; }
+.chip {
+  flex: 0 0 auto; width: auto;
+  padding: 14rpx 30rpx; border-radius: 999rpx; font-size: 26rpx;
+  background: none; border: 1rpx solid rgba(255,255,255,.10); color: #8b90a8;
+  margin: 0 16rpx 16rpx 0; line-height: 1.8;
+}
+.chip.sel { border-color: rgba(255,215,154,.5); color: #ffd79a; background: rgba(255,215,154,.06); }

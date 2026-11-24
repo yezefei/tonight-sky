@@ -1,0 +1,13 @@
+.orb-wrap { flex: 1; display: flex; align-items: center; justify-content: center; }
+.orb {
+  width: 280rpx; height: 280rpx; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,246,227,.75), rgba(185,195,255,.15) 70%);
+  box-shadow: 0 0 180rpx rgba(230,225,255,.22);
+  transition: transform 4s ease-in-out;
+}
+.orb.in { transform: scale(1.4); }
+.orb.out { transform: scale(1); transition-duration: 6s; }
+.breath-txt { text-align: center; color: #8b90a8; font-size: 28rpx; letter-spacing: .3em; min-height: 44rpx; }
+@media (prefers-reduced-motion: reduce) {
+  .orb { transition-duration: 1s; }
+}

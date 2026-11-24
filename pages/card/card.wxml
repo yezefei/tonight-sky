@@ -1,0 +1,16 @@
+<view class="page" style="padding-top:{{navTop}}px">
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+  <view class="h2" style="text-align:center">今晚的卡片</view>
+
+  <view class="card-wrap">
+    <image wx:if="{{img}}" class="card-img" src="{{img}}" mode="aspectFit"></image>
+    <view wx:else class="card-loading">正在画这颗星……</view>
+  </view>
+
+  <!-- 离屏 canvas：只负责出图，不在页面上显示 -->
+  <canvas canvas-id="cardCanvas" class="offscreen" style="width:600px;height:960px"></canvas>
+
+  <view class="btn-main {{img && !saved ? '' : 'dis'}}" hover-class="btn-hover" bindtap="save">{{saved ? '已存进相册 ✓' : '存 进 相 册'}}</view>
+  <button class="link-quiet" open-type="share">把「今晚先睡」分享给朋友</button>
+  <view style="height:40rpx"></view>
+</view>

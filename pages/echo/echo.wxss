@@ -1,0 +1,19 @@
+.quote-card {
+  margin-top: 36rpx; background: rgba(255,255,255,.04);
+  border: 1rpx solid rgba(255,255,255,.08); border-radius: 28rpx; padding: 36rpx;
+  transition: opacity .5s ease;
+}
+.tag {
+  display: inline-block; font-size: 20rpx; color: #b9c3ff;
+  border: 1rpx solid rgba(185,195,255,.3); border-radius: 999rpx;
+  padding: 4rpx 18rpx; margin-bottom: 20rpx;
+}
+.quote-text { font-size: 33rpx; line-height: 2.1; font-family: "Songti SC", "STSong", serif; }
+.ghost {
+  position: fixed; z-index: 50; pointer-events: none;
+  color: #fff6e3; font-size: 33rpx; line-height: 2.1; font-family: "Songti SC", "STSong", serif;
+  transition: transform 1.9s cubic-bezier(.45,.05,.35,1), opacity 1.9s ease, filter 1.9s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ghost { transition-duration: .6s; }
+}

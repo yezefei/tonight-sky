@@ -1,0 +1,114 @@
+<view class="page" style="padding-top:{{navTop}}px">
+  <!-- 夜空层：纯装饰，不可点。星星都归置在恒星里 -->
+  <view class="sky-layer">
+    <view wx:for="{{bgStars}}" wx:key="index" class="bg-star"
+      style="left:{{item.x}}%;top:{{item.y}}%;width:{{item.s}}px;height:{{item.s}}px;opacity:{{item.o}};animation-delay:{{item.d}}s"></view>
+    <view wx:for="{{stars}}" wx:key="id"
+      class="sky-star deco {{item.cls}}"
+      style="left:{{item.x}}%;top:{{item.y}}%;width:{{item.size}}px;height:{{item.size}}px;animation-delay:{{item.delay}}s"></view>
+  </view>
+
+  <!-- 恒星：所有星星在里面转 -->
+  <view class="sun" style="top:{{navTop + 16}}px" hover-class="tap" bindtap="openOrbit">
+    <view class="sun-dot"></view>
+    <view class="sun-cap">{{count ? count + ' 颗星星' : '还没有星星'}}</view>
+  </view>
+
+  <view class="hero">
+    <view class="greet">{{greet}}</view>
+    <view class="h1">睡不着，</view>
+    <view class="h1">也没关系。</view>
+    <block wx:if="{{count === 0}}">
+      <view class="sub">今晚心里装着的事，</view>
+      <view class="sub">说完，就把它变成星星，放在天上。</view>
+    </block>
+    <block wx:else>
+      <view class="sub">你的夜空里，已经有 <text class="em">{{count}} 颗星星</text>。</view>
+      <view class="sub" wx:if="{{doneCount > 0}}">其中 <text class="em">{{doneCount}} 颗</text>，已经翻篇了。</view>
+      <view class="sub" wx:else>每一颗，都是一个说出来了的夜晚。</view>
+    </block>
+  </view>
+
+  <view class="spacer"></view>
+
+  <!-- 放它走之后的收尾面板 -->
+  <view class="after-release {{justReleased ? 'on' : ''}}">
+    <view class="ar-txt">它已经到天上了。今晚，不用解决了。</view>
+    <view class="btn-main" hover-class="btn-hover" bindtap="makeCard">把 今 晚 存 成 一 张 卡 片</view>
+    <view class="link-quiet" hover-class="tap" bindtap="dismissRelease" style="color:#8b90a8">晚安，直接睡了</view>
+  </view>
+
+  <view wx:if="{{banner}}" class="revisit-banner" hover-class="tap" bindtap="openRevisit">{{banner}}</view>
+  <view wx:if="{{!justReleased}}" class="btn-main" hover-class="btn-hover" bindtap="goWrite">说 说 今 晚 的 事</view>
+  <view wx:if="{{!justReleased}}" class="link-quiet" hover-class="tap" bindtap="goCalm">不想说，就安静待一会儿</view>
+  <!-- 恒星轨道视图：所有星星绕恒星旋转，点星看原话（复用下方星星详情浮层，状态一致） -->
+  <view class="orbit-view {{orbitOn ? 'on' : ''}}" catchtouchmove="noop">
+    <view class="back orbit-back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="closeOrbit">‹</view>
+    <view class="orbit-stage">
+      <view class="sun-core"></view>
+      <view wx:for="{{orbits}}" wx:key="index" wx:for-item="ring" class="orbit-ring"
+        style="width:{{ring.size}}rpx;height:{{ring.size}}rpx;animation-duration:{{ring.duration}}s;animation-direction:{{ring.dir}}">
+        <view wx:for="{{ring.stars}}" wx:key="id" wx:for-item="s"
+          class="orbit-star {{s.cls}}"
+          style="left:{{s.x}}%;top:{{s.y}}%;width:{{s.size}}px;height:{{s.size}}px"
+          bindtap="onStar" data-id="{{s.id}}"></view>
+      </view>
+    </view>
+    <view class="orbit-hint">{{count ? '点一颗星，看看那晚写的话' : '把今晚的事说出来，星星会在这里转'}}</view>
+  </view>
+
+  <!-- 星星详情 -->
+  <view class="mask {{sheetOn ? 'on' : ''}}" bindtap="closeSheets"></view>
+  <view class="sheet {{sheetOn ? 'on' : ''}}" catchtouchmove="noop">
+    <view class="meta">
+      {{sheet.meta}}<text wx:if="{{sheet.done}}" class="gold-tag"> · 已翻篇 ✦</text>
+    </view>
+    <view class="txt">{{sheet.text}}</view>
+    <view wx:if="{{sheet.reply}}" class="reply-card">
+      <view class="reply-meta">回音</view>
+      <view class="reply-text">{{sheet.reply}}</view>
+    </view>
+    <view wx:if="{{!sheet.done}}" class="turn" hover-class="tap" bindtap="turnStar">这 件 事 ， 翻 篇 了</view>
+    <view class="turn send" hover-class="tap" bindtap="sendStar">{{sending ? '正 在 包 这 颗 星 …' : '送 给 一 个 朋 友'}}</view>
+    <view style="text-align:center;margin-top:28rpx">
+      <view class="del" hover-class="tap" bindtap="sheetCard" style="margin-right:40rpx">存成卡片</view>
+      <view wx:if="{{sheet.sent}}" class="del" hover-class="tap" bindtap="checkReply" style="margin-right:40rpx">看看回音</view>
+      <view class="del" hover-class="tap" bindtap="delStar">让这颗星星熄灭（删除这条记录）</view>
+    </view>
+  </view>
+
+  <!-- 送星确认浮层（open-type=share 必须是 button，全局样式已重置） -->
+  <view class="sheet {{shareOn ? 'on' : ''}}" catchtouchmove="noop">
+    <view class="meta">星已经包好了</view>
+    <view class="txt">选一个朋友，送出去。</view>
+    <view class="sub" style="font-size:26rpx;margin-top:12rpx">TA 收下后，可以回一句话给你。</view>
+    <button class="turn send" open-type="share">选 一 个 朋 友 ， 送 出 去</button>
+    <view style="text-align:center">
+      <view class="del" hover-class="tap" bindtap="closeSheets">先不送了</view>
+    </view>
+  </view>
+
+  <!-- 星回：回看作答 -->
+  <view class="sheet {{rvOn ? 'on' : ''}}" catchtouchmove="noop">
+    <view class="meta">{{rv.meta}}</view>
+    <view class="txt">{{rv.text}}</view>
+    <view wx:if="{{rv.more.length}}" class="rv-more">
+      <view wx:for="{{rv.more}}" wx:key="index">
+        <text class="when">{{item.when}}</text>
+        <view>{{item.text}}</view>
+      </view>
+    </view>
+    <view class="rv-ask">这件事，现在怎么样了？</view>
+    <view class="turn" hover-class="tap" bindtap="rvTurn">翻 篇 了</view>
+    <view style="text-align:center">
+      <view class="del" hover-class="tap" bindtap="rvMoreOpen" style="margin-right:40rpx">想再说几句</view>
+      <view class="del" hover-class="tap" bindtap="rvWait">还没，再放一会儿</view>
+    </view>
+    <view wx:if="{{rvWrite}}" style="margin-top:24rpx">
+      <textarea class="rv-input" placeholder="接着那晚，再说几句……" value="{{rvText}}" bindinput="onRvInput" auto-height maxlength="2000"></textarea>
+      <view class="btn-main" hover-class="btn-hover" style="margin-top:20rpx" bindtap="rvSaveMore">也 放 到 这 颗 星 上</view>
+    </view>
+  </view>
+
+  <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
+</view>
