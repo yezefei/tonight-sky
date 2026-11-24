@@ -97,10 +97,10 @@ Page({
           id: r.id,
           x: (50 + 47 * Math.cos(a)).toFixed(2),
           y: (50 + 47 * Math.sin(a)).toFixed(2),
-          size: 6 + (r.text.length % 5),
+          size: 8 + (r.text.length % 5),
           cls: (r.id === freshId ? 'fresh ' : '')
              + (r.id === turningId ? 'turning ' : '')
-             + (r.done ? 'gold' : '')
+             + (r.done ? 'gold' : (r.reply ? 'replied' : ''))
              + (r.id === this.beckonId ? ' beckon' : '')
         };
       })

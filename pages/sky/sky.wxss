@@ -89,13 +89,31 @@
   from { transform: translate(-50%, -50%) rotate(0deg); }
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
-.orbit-star {
+/* 点击热区：透明包裹层 72rpx，视觉星点保持小巧 */
+.orbit-hit {
   position: absolute; transform: translate(-50%, -50%);
+  width: 72rpx; height: 72rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.orbit-star {
   border-radius: 50%; background: #fff6e3;
   box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 22px 6px rgba(255,246,227,.18);
   animation: tw 5s ease-in-out infinite;
 }
 .orbit-star.gold { background: #ffd79a; box-shadow: 0 0 8px 2px rgba(255,215,154,.75), 0 0 26px 8px rgba(255,215,154,.30); }
+/* 有回音的星：淡蓝 */
+.orbit-star.replied { background: #cdd6ff; box-shadow: 0 0 8px 2px rgba(185,195,255,.75), 0 0 26px 8px rgba(185,195,255,.30); }
+.sky-star.replied { background: #cdd6ff; box-shadow: 0 0 8px 2px rgba(185,195,255,.75), 0 0 26px 8px rgba(185,195,255,.30); }
+
+/* 轨道页图例 */
+.orbit-legend {
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 140rpx);
+  display: flex; justify-content: center;
+}
+.orbit-legend .lg { display: flex; align-items: center; margin: 0 24rpx; color: #525771; font-size: 20rpx; letter-spacing: .1em; }
+.lg-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: #fff6e3; margin-right: 12rpx; box-shadow: 0 0 6px 2px rgba(255,246,227,.4); }
+.lg-dot.gold { background: #ffd79a; box-shadow: 0 0 6px 2px rgba(255,215,154,.5); }
+.lg-dot.blue { background: #cdd6ff; box-shadow: 0 0 6px 2px rgba(185,195,255,.5); }
 .orbit-star.fresh { animation: born 2.6s ease-out forwards; z-index: 5; }
 .orbit-star.turning { animation: turnGold 2.2s ease-out forwards; z-index: 5; }
 .orbit-star.beckon { animation: beckon 4.5s ease-in-out infinite; }

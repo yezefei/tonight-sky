@@ -48,10 +48,17 @@
       <view wx:for="{{orbits}}" wx:key="index" wx:for-item="ring" class="orbit-ring"
         style="width:{{ring.size}}rpx;height:{{ring.size}}rpx;animation-duration:{{ring.duration}}s;animation-direction:{{ring.dir}}">
         <view wx:for="{{ring.stars}}" wx:key="id" wx:for-item="s"
-          class="orbit-star {{s.cls}}"
-          style="left:{{s.x}}%;top:{{s.y}}%;width:{{s.size}}px;height:{{s.size}}px"
-          bindtap="onStar" data-id="{{s.id}}"></view>
+          class="orbit-hit" style="left:{{s.x}}%;top:{{s.y}}%"
+          bindtap="onStar" data-id="{{s.id}}">
+          <view class="orbit-star {{s.cls}}" style="width:{{s.size}}px;height:{{s.size}}px"></view>
+        </view>
       </view>
+    </view>
+    <!-- 图例：区分星星性质 -->
+    <view wx:if="{{count}}" class="orbit-legend">
+      <view class="lg"><view class="lg-dot"></view>心事</view>
+      <view class="lg"><view class="lg-dot gold"></view>已翻篇</view>
+      <view class="lg"><view class="lg-dot blue"></view>有回音</view>
     </view>
     <view class="orbit-hint">{{count ? '点一颗星，看看那晚写的话' : '把今晚的事说出来，星星会在这里转'}}</view>
   </view>
