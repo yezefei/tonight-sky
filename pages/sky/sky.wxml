@@ -71,8 +71,11 @@
     <view class="turn send" hover-class="tap" bindtap="sendStar">{{sending ? '正 在 包 这 颗 星 …' : '送 给 一 个 朋 友'}}</view>
     <view style="text-align:center;margin-top:28rpx">
       <view class="del" hover-class="tap" bindtap="sheetCard" style="margin-right:40rpx">存成卡片</view>
-      <view wx:if="{{sheet.sent}}" class="del" hover-class="tap" bindtap="checkReply" style="margin-right:40rpx">看看回音</view>
-      <view class="del" hover-class="tap" bindtap="delStar">让这颗星星熄灭（删除这条记录）</view>
+      <view wx:if="{{sheet.sent}}" class="del" hover-class="tap" bindtap="checkReply">看看回音</view>
+    </view>
+    <view class="sheet-divider"></view>
+    <view style="text-align:center">
+      <view class="del faint" hover-class="tap" bindtap="delStar">让这颗星星熄灭（删除这条记录）</view>
     </view>
   </view>
 

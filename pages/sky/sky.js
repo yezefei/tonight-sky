@@ -233,8 +233,19 @@ Page({
   },
 
   delStar() {
-    store.save(store.load().filter(x => x.id !== this.sheetId), () => this.showToast('这台设备存不下东西了'));
-    this.closeSheets(); this.buildSky();
+    // 不可逆操作，确认一次
+    wx.showModal({
+      title: '让这颗星熄灭？',
+      content: '熄灭之后，就找不回来了。',
+      confirmText: '熄灭',
+      cancelText: '再留留',
+      confirmColor: '#a87f7f',
+      success: r => {
+        if (!r.confirm) return;
+        store.save(store.load().filter(x => x.id !== this.sheetId), () => this.showToast('这台设备存不下东西了'));
+        this.closeSheets(); this.buildSky();
+      }
+    });
   },
 
   turnStar() { this.doTurn(this.sheetId); },

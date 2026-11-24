@@ -96,6 +96,9 @@ button::after { border: none; }
   text-align: center; font-family: "Songti SC", "STSong", serif;
 }
 .sheet .del { display: inline-block; margin-top: 36rpx; background: none; border: none; color: #525771; font-size: 25rpx; padding: 8rpx 0; }
+/* 危险操作：分隔线 + 单独一行 + 更淡，避免误触 */
+.sheet-divider { margin-top: 40rpx; border-top: 1rpx solid rgba(255,255,255,.06); }
+.sheet .del.faint { margin-top: 24rpx; color: #3d4256; font-size: 24rpx; }
 .rv-ask { margin-top: 44rpx; font-family: "Songti SC", "STSong", serif; font-size: 34rpx; letter-spacing: .06em; }
 .rv-more { margin-top: 28rpx; font-size: 27rpx; line-height: 2.1; color: #8b90a8; border-left: 2rpx solid rgba(255,255,255,.08); padding-left: 24rpx; }
 .rv-more .when { display: block; font-size: 22rpx; color: #525771; letter-spacing: .08em; }
