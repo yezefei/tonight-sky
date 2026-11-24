@@ -109,6 +109,8 @@ Page({
 
   openOrbit() { this.setData({ orbitOn: true }); },
   closeOrbit() { this.setData({ orbitOn: false }); },
+  // 点轨道空白处：收起星星详情浮层
+  onOrbitBg() { if (this.data.sheetOn) this.closeSheets(); },
 
   noop() {},
 

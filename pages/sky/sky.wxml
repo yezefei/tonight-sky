@@ -38,7 +38,7 @@
   <view wx:if="{{!justReleased}}" class="btn-main" hover-class="btn-hover" bindtap="goWrite">说 说 今 晚 的 事</view>
   <view wx:if="{{!justReleased}}" class="link-quiet" hover-class="tap" bindtap="goCalm">不想说，就安静待一会儿</view>
   <!-- 恒星轨道视图：所有星星绕恒星旋转，点星看原话（复用下方星星详情浮层，状态一致） -->
-  <view class="orbit-view {{orbitOn ? 'on' : ''}}" catchtouchmove="noop">
+  <view class="orbit-view {{orbitOn ? 'on' : ''}}" catchtouchmove="noop" bindtap="onOrbitBg">
     <view class="back orbit-back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="closeOrbit">‹</view>
     <view class="orbit-stage">
       <view class="sun-dash"></view>
@@ -49,7 +49,7 @@
         style="width:{{ring.size}}rpx;height:{{ring.size}}rpx;animation-duration:{{ring.duration}}s;animation-direction:{{ring.dir}}">
         <view wx:for="{{ring.stars}}" wx:key="id" wx:for-item="s"
           class="orbit-hit" style="left:{{s.x}}%;top:{{s.y}}%"
-          bindtap="onStar" data-id="{{s.id}}">
+          catchtap="onStar" data-id="{{s.id}}">
           <view class="orbit-star {{s.cls}}" style="width:{{s.size}}px;height:{{s.size}}px"></view>
         </view>
       </view>
@@ -63,8 +63,8 @@
     <view class="orbit-hint">{{count ? '点一颗星，看看那晚写的话' : '把今晚的事说出来，星星会在这里转'}}</view>
   </view>
 
-  <!-- 星星详情 -->
-  <view class="mask {{sheetOn ? 'on' : ''}}" bindtap="closeSheets"></view>
+  <!-- 遮罩只给星回浮层用；星星详情浮层不遮挡，方便在星之间直接切换 -->
+  <view class="mask {{rvOn ? 'on' : ''}}" bindtap="closeSheets"></view>
   <view class="sheet {{sheetOn ? 'on' : ''}}" catchtouchmove="noop">
     <view class="meta">
       {{sheet.meta}}<text wx:if="{{sheet.done}}" class="gold-tag"> · 已翻篇 ✦</text>
