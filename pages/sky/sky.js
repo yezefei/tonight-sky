@@ -73,31 +73,40 @@ Page({
       const days = Math.max(1, Math.floor((Date.now() - (beckon.snoozed || beckon.t || beckon.id)) / 86400e3));
       banner = `一颗 ${days} 天前的星，在等你回头看看 ✦`;
     }
+    const now = new Date();
+    const week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()];
     this.setData({
       stars, banner,
       count: list.length,
       doneCount: list.filter(r => r.done).length,
       justReleased: !!g.justReleased,
+      dateLabel: `${now.getMonth() + 1}月${now.getDate()}日 · ${week}`,
       orbits: this.buildOrbits(list, g.freshId, g.turningId)
     });
     if (g.turningId) setTimeout(() => { g.turningId = null; }, 2400);
   },
 
-  // 轨道视图：星星分三层轨道绕恒星旋转
+  // 轨道视图：星星分三层轨道绕恒星旋转（深空观测台：带刻度线、轨道名、星星编号）
   buildOrbits(list, freshId, turningId) {
     const rings = [[], [], []];
+    // 编号按写下时间排序：最早的心事是 01 号星
+    const seq = {};
+    [...list].sort((a, b) => a.id - b.id).forEach((r, i) => { seq[r.id] = String(i + 1).padStart(2, '0'); });
     list.forEach((r, i) => rings[i % 3].push(r));
-    const sizes = [300, 440, 580];   // 轨道直径 rpx
+    const sizes = [344, 488, 600];   // 轨道直径 rpx（外环收一点，矮屏不蹭底部计数）
     const durs = [80, 110, 150];     // 每圈秒数
+    const ticks = Array.from({ length: 12 }, (_, i) => i * 30);  // 每环 12 条刻度线
     return rings.map((ring, k) => ({
-      size: sizes[k], duration: durs[k], dir: k % 2 ? 'reverse' : 'normal',
+      size: sizes[k], half: sizes[k] / 2, duration: durs[k], dir: k % 2 ? 'reverse' : 'normal',
+      name: 'ORBIT L' + (k + 1), ticks,
       stars: ring.map((r, j) => {
         const a = (j / ring.length) * 2 * Math.PI + k * 0.9;
         return {
           id: r.id,
           x: (50 + 47 * Math.cos(a)).toFixed(2),
           y: (50 + 47 * Math.sin(a)).toFixed(2),
-          size: 8 + (r.text.length % 5),
+          idx: seq[r.id],
+          size: Math.round((8 + (r.text.length % 5)) * (r.done ? 1.7 : 1)),
           cls: (r.id === freshId ? 'fresh ' : '')
              + (r.id === turningId ? 'turning ' : '')
              + (r.done ? 'gold' : (r.reply ? 'replied' : ''))
