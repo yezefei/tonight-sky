@@ -43,7 +43,15 @@ Page({
     this.setData({ bgStars });
   },
 
-  onShow() { this.buildSky(); },
+  onShow() {
+    this.buildSky();
+    // 放它走之后回到夜空：自动进入轨道视图，看着新星加入环绕（每次释放只自动一次）
+    const g = getApp().globalData;
+    if (g.justReleased && !g.autoOrbitShown) {
+      g.autoOrbitShown = true;
+      setTimeout(() => this.setData({ orbitOn: true }), 900);
+    }
+  },
 
   buildSky() {
     const g = getApp().globalData;
@@ -70,13 +78,13 @@ Page({
       count: list.length,
       doneCount: list.filter(r => r.done).length,
       justReleased: !!g.justReleased,
-      orbits: this.buildOrbits(list)
+      orbits: this.buildOrbits(list, g.freshId)
     });
     if (g.turningId) setTimeout(() => { g.turningId = null; }, 2400);
   },
 
   // 轨道视图：星星分三层轨道绕恒星旋转
-  buildOrbits(list) {
+  buildOrbits(list, freshId) {
     const rings = [[], [], []];
     list.forEach((r, i) => rings[i % 3].push(r));
     const sizes = [300, 440, 580];   // 轨道直径 rpx
@@ -90,7 +98,7 @@ Page({
           x: (50 + 47 * Math.cos(a)).toFixed(2),
           y: (50 + 47 * Math.sin(a)).toFixed(2),
           size: 6 + (r.text.length % 5),
-          cls: (r.done ? 'gold' : '') + (r.id === this.beckonId ? ' beckon' : '')
+          cls: (r.id === freshId ? 'fresh ' : '') + (r.done ? 'gold' : '') + (r.id === this.beckonId ? ' beckon' : '')
         };
       })
     })).filter(r => r.stars.length);
@@ -104,8 +112,10 @@ Page({
   goWrite() { wx.navigateTo({ url: '/pages/write/write' }); },
   goCalm() { wx.navigateTo({ url: '/pages/calm/calm' }); },
   dismissRelease() {
-    getApp().globalData.justReleased = false;
-    getApp().globalData.freshId = null;
+    const g = getApp().globalData;
+    g.justReleased = false;
+    g.freshId = null;
+    g.autoOrbitShown = false;
     this.setData({ justReleased: false });
     this.buildSky();
   },

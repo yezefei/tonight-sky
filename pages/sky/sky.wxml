@@ -8,11 +8,7 @@
       style="left:{{item.x}}%;top:{{item.y}}%;width:{{item.size}}px;height:{{item.size}}px;animation-delay:{{item.delay}}s"></view>
   </view>
 
-  <!-- 恒星：所有星星在里面转 -->
-  <view class="sun" style="top:{{navTop + 16}}px" hover-class="tap" bindtap="openOrbit">
-    <view class="sun-dot"></view>
-    <view class="sun-cap">{{count ? count + ' 颗星星' : '还没有星星'}}</view>
-  </view>
+  <!-- 恒星入口不在首页；点下方「已经有 N 颗星星」那句话进入轨道视图 -->
 
   <view class="hero">
     <view class="greet">{{greet}}</view>
@@ -23,7 +19,7 @@
       <view class="sub">说完，就把它变成星星，放在天上。</view>
     </block>
     <block wx:else>
-      <view class="sub">你的夜空里，已经有 <text class="em">{{count}} 颗星星</text>。</view>
+      <view class="sub sub-link" hover-class="tap" bindtap="openOrbit">你的夜空里，已经有 <text class="em link-em">{{count}} 颗星星</text>。</view>
       <view class="sub" wx:if="{{doneCount > 0}}">其中 <text class="em">{{doneCount}} 颗</text>，已经翻篇了。</view>
       <view class="sub" wx:else>每一颗，都是一个说出来了的夜晚。</view>
     </block>

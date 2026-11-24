@@ -27,19 +27,13 @@
   50% { box-shadow: 0 0 8px 2px rgba(255,246,227,.7), 0 0 52px 16px rgba(255,215,154,.30); }
 }
 
-/* 恒星：首屏唯一的可点星 */
-.sun { position: absolute; right: 48rpx; z-index: 3; display: flex; flex-direction: column; align-items: center; }
-.sun-dot {
-  width: 72rpx; height: 72rpx; border-radius: 50%;
-  background: radial-gradient(circle at 40% 38%, #fff9ea, #ffd79a 55%, rgba(255,215,154,0) 78%);
-  box-shadow: 0 0 24rpx 8rpx rgba(255,215,154,.5), 0 0 90rpx 30rpx rgba(255,215,154,.18);
-  animation: sunPulse 5s ease-in-out infinite;
-}
+/* 轨道页入口：「已经有 N 颗星星」那句话本身是可点的 */
+.sub-link .link-em { border-bottom: 1rpx dotted rgba(255,215,154,.45); padding-bottom: 3rpx; }
+
 @keyframes sunPulse {
   0%, 100% { box-shadow: 0 0 24rpx 8rpx rgba(255,215,154,.5), 0 0 90rpx 30rpx rgba(255,215,154,.18); }
   50% { box-shadow: 0 0 30rpx 12rpx rgba(255,215,154,.62), 0 0 120rpx 44rpx rgba(255,215,154,.26); }
 }
-.sun-cap { margin-top: 18rpx; font-size: 20rpx; color: #8b90a8; letter-spacing: .16em; }
 
 /* 首屏星点纯装饰 */
 .sky-star.deco { pointer-events: none; }
@@ -79,6 +73,7 @@
   animation: tw 5s ease-in-out infinite;
 }
 .orbit-star.gold { background: #ffd79a; box-shadow: 0 0 8px 2px rgba(255,215,154,.75), 0 0 26px 8px rgba(255,215,154,.30); }
+.orbit-star.fresh { animation: born 2.6s ease-out forwards; z-index: 5; }
 .orbit-star.beckon { animation: beckon 4.5s ease-in-out infinite; }
 .orbit-hint {
   position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 88rpx);
