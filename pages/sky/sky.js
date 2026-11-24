@@ -15,7 +15,7 @@ Page({
     count: 0, doneCount: 0,
     banner: '', justReleased: false,
     sheetOn: false, sheet: { meta: '', text: '', done: false, reply: '', sent: false },
-    shareOn: false, sending: false,
+    shareOn: false, sending: false, turnFlash: false,
     rvOn: false, rv: { meta: '', text: '', more: [] },
     rvWrite: false, rvText: '',
     toast: ''
@@ -78,13 +78,13 @@ Page({
       count: list.length,
       doneCount: list.filter(r => r.done).length,
       justReleased: !!g.justReleased,
-      orbits: this.buildOrbits(list, g.freshId)
+      orbits: this.buildOrbits(list, g.freshId, g.turningId)
     });
     if (g.turningId) setTimeout(() => { g.turningId = null; }, 2400);
   },
 
   // 轨道视图：星星分三层轨道绕恒星旋转
-  buildOrbits(list, freshId) {
+  buildOrbits(list, freshId, turningId) {
     const rings = [[], [], []];
     list.forEach((r, i) => rings[i % 3].push(r));
     const sizes = [300, 440, 580];   // 轨道直径 rpx
@@ -98,7 +98,10 @@ Page({
           x: (50 + 47 * Math.cos(a)).toFixed(2),
           y: (50 + 47 * Math.sin(a)).toFixed(2),
           size: 6 + (r.text.length % 5),
-          cls: (r.id === freshId ? 'fresh ' : '') + (r.done ? 'gold' : '') + (r.id === this.beckonId ? ' beckon' : '')
+          cls: (r.id === freshId ? 'fresh ' : '')
+             + (r.id === turningId ? 'turning ' : '')
+             + (r.done ? 'gold' : '')
+             + (r.id === this.beckonId ? ' beckon' : '')
         };
       })
     })).filter(r => r.stars.length);
@@ -239,9 +242,14 @@ Page({
     const list = store.load();
     const i = list.findIndex(x => x.id === id);
     if (i > -1) { list[i].done = true; store.save(list, () => this.showToast('这台设备存不下东西了')); }
-    this.closeSheets();
+    // 翻篇仪式：全屏金光一闪 + 星星镀金爆裂 + 轻震动
     getApp().globalData.turningId = id;
+    try { wx.vibrateShort({ type: 'light' }); } catch (e) {}
+    this.setData({ turnFlash: true });
+    this.closeSheets();
     this.buildSky();
+    setTimeout(() => this.setData({ turnFlash: false }), 1900);
+    this.showToast('这颗星，从今天起是金色的 ✦');
   },
 
   /* ── 星回 ── */

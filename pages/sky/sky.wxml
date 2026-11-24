@@ -41,6 +41,9 @@
   <view class="orbit-view {{orbitOn ? 'on' : ''}}" catchtouchmove="noop">
     <view class="back orbit-back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="closeOrbit">‹</view>
     <view class="orbit-stage">
+      <view class="sun-dash"></view>
+      <view class="sun-pulse"></view>
+      <view class="sun-pulse p2"></view>
       <view class="sun-core"></view>
       <view wx:for="{{orbits}}" wx:key="index" wx:for-item="ring" class="orbit-ring"
         style="width:{{ring.size}}rpx;height:{{ring.size}}rpx;animation-duration:{{ring.duration}}s;animation-direction:{{ring.dir}}">
@@ -105,6 +108,9 @@
       <view class="btn-main" hover-class="btn-hover" style="margin-top:20rpx" bindtap="rvSaveMore">也 放 到 这 颗 星 上</view>
     </view>
   </view>
+
+  <!-- 翻篇仪式：金光一闪 -->
+  <view class="gold-flash {{turnFlash ? 'on' : ''}}"></view>
 
   <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
 </view>
