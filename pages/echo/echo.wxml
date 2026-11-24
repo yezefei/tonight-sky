@@ -6,7 +6,7 @@
     <view class="quote-text">{{text}}</view>
   </view>
   <view class="sub">说出来了，今晚就到这儿。</view>
-  <view class="sub">它在天上，替你存着。</view>
+  <view class="sub">从现在起，有颗星替你记着。</view>
   <view class="sub">你已经说出来了——<text class="em">让它去天上待一会儿吧。</text></view>
 
   <!-- 释放动画的替身 -->
