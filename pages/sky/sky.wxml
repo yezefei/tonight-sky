@@ -29,7 +29,7 @@
 
   <!-- 放它走之后的收尾面板 -->
   <view class="after-release {{justReleased ? 'on' : ''}}">
-    <view class="ar-txt">它已经到天上了。今晚，不用解决了。</view>
+    <view class="ar-txt">它已经到天上了。今晚就到这儿。</view>
     <view class="btn-main" hover-class="btn-hover" bindtap="makeCard">把 今 晚 存 成 一 张 卡 片</view>
     <view class="link-quiet" hover-class="tap" bindtap="dismissRelease" style="color:#8b90a8">晚安，直接睡了</view>
   </view>

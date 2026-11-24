@@ -5,9 +5,9 @@
     <view wx:if="{{tag}}" class="tag">{{tag}}</view>
     <view class="quote-text">{{text}}</view>
   </view>
-  <view class="sub">这件事压在身上，一定很重。</view>
-  <view class="sub">今晚不用想出办法，也不用现在就想明白。</view>
-  <view class="sub">你已经说出来了——<text class="em">让它去天上待一会儿吧。</text></view>
+  <view class="sub">说出来了，今晚就到这儿。</view>
+  <view class="sub">它在天上，替你存着。</view>
+  <view class="sub"><text class="em">想看了，随时点开那颗星。</text></view>
 
   <!-- 释放动画的替身 -->
   <view wx:if="{{ghost.show}}" class="ghost" style="left:{{ghost.left}}px;top:{{ghost.top}}px;width:{{ghost.width}}px;transform:{{ghost.transform}};opacity:{{ghost.opacity}};filter:blur({{ghost.blur}}px)">{{text}}</view>
