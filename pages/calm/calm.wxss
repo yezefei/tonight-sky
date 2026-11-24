@@ -1,13 +1,76 @@
-.orb-wrap { flex: 1; display: flex; align-items: center; justify-content: center; }
-.orb {
-  width: 280rpx; height: 280rpx; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, rgba(255,246,227,.75), rgba(185,195,255,.15) 70%);
-  box-shadow: 0 0 180rpx rgba(230,225,255,.22);
-  transition: transform 4s ease-in-out;
+/* 呼吸页 · 方案3「轨道光点」：与恒星页同一套深空观测台语言 */
+.calm-page { height: 100vh; overflow: hidden; }
+
+.calm-back {
+  color: #C9D2F2; border: 1rpx solid rgba(232,236,255,.22); border-radius: 50%;
 }
-.orb.in { transform: scale(1.4); }
-.orb.out { transform: scale(1); transition-duration: 6s; }
-.breath-txt { text-align: center; color: #8b90a8; font-size: 28rpx; letter-spacing: .3em; min-height: 44rpx; }
+
+.calm-eyebrow {
+  position: absolute; left: 0; right: 0; top: 200rpx; text-align: center;
+  font-family: monospace; font-size: 18rpx; letter-spacing: .42em; color: #6C7699;
+}
+.calm-title {
+  position: absolute; left: 0; right: 0; top: 252rpx; text-align: center;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
+  font-size: 40rpx; font-weight: 600; letter-spacing: .4em; text-indent: .4em; color: #EDF0FF;
+}
+.calm-sub {
+  position: absolute; left: 0; right: 0; top: 332rpx; text-align: center;
+  font-size: 22rpx; letter-spacing: .26em; color: #7C84A6;
+}
+
+/* 轨道：直径 500rpx，24 格刻度 */
+.calm-stage { position: absolute; left: 50%; top: 47%; transform: translate(-50%, -50%); width: 500rpx; height: 500rpx; }
+.calm-path { position: absolute; inset: 0; border-radius: 50%; border: 1rpx solid rgba(200,210,255,.12); }
+.calm-tick {
+  position: absolute; left: 50%; top: 0; width: 1px; height: 17rpx;
+  background: rgba(200,210,255,.14); transform-origin: 1rpx 250rpx;
+}
+.calm-tick.lg { height: 27rpx; background: rgba(200,210,255,.30); }
+
+/* 光点 + 拖尾：整体装在一个旋转容器里，10s 一圈，前 40%（4s）走半圈是吸 */
+.comet-spin { position: absolute; inset: 0; }
+.comet-spin.go { animation: cometSpin 10s linear infinite; }
+@keyframes cometSpin {
+  0% { transform: rotate(-90deg); }
+  40% { transform: rotate(90deg); }
+  100% { transform: rotate(270deg); }
+}
+.comet {
+  position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%);
+  width: 23rpx; height: 23rpx; border-radius: 50%;
+  background: radial-gradient(circle at 38% 34%, #FFFDF6 0%, #FFE9BE 50%, #F2B96D 100%);
+  box-shadow: 0 0 12px 4px rgba(255,230,180,.85), 0 0 40px 14px rgba(255,214,150,.30);
+}
+.trail {
+  position: absolute; left: 50%; top: 0; border-radius: 50%;
+  background: #FFCE8A; box-shadow: 0 0 8px 2px rgba(255,206,138,.5);
+  transform-origin: 0 250rpx;
+}
+.trail.t1 { width: 15rpx; height: 15rpx; margin-left: -8rpx; margin-top: -8rpx; transform: rotate(-8deg); opacity: .28; }
+.trail.t2 { width: 13rpx; height: 13rpx; margin-left: -7rpx; margin-top: -7rpx; transform: rotate(-16deg); opacity: .21; }
+.trail.t3 { width: 10rpx; height: 10rpx; margin-left: -5rpx; margin-top: -5rpx; transform: rotate(-24deg); opacity: .15; }
+.trail.t4 { width: 7rpx; height: 7rpx; margin-left: -4rpx; margin-top: -4rpx; transform: rotate(-32deg); opacity: .09; }
+
+/* 圆心：阶段文字 + 等宽倒计时 */
+.calm-center { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; }
+.calm-phase {
+  font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
+  font-size: 44rpx; font-weight: 600; letter-spacing: .5em; text-indent: .5em; color: #EDF0FF;
+  min-height: 62rpx;
+}
+.calm-count { margin-top: 22rpx; font-family: monospace; font-size: 26rpx; letter-spacing: .3em; text-indent: .3em; color: #6C7699; min-height: 36rpx; }
+
+.calm-tempo {
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 300rpx);
+  text-align: center; font-family: monospace; font-size: 20rpx; letter-spacing: .28em; color: #4A5168;
+}
+.calm-quit {
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 160rpx);
+  width: auto; font-size: 22rpx; letter-spacing: .26em; color: #6E7694;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .orb { transition-duration: 1s; }
+  .comet-spin.go { animation-duration: 9999s; }
+  .trail { display: none; }
 }
