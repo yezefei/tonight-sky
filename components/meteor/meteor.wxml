@@ -1,12 +1,22 @@
 <view wx:if="{{on}}" class="meteor-layer">
-  <!-- 第一幕：流星斜着划破夜空 -->
+  <!-- 第一幕：流星斜着划破夜空（亮头朝运动方向，长尾拖在身后） -->
   <view wx:if="{{phase === 'streak'}}" class="meteor-streak" bindanimationend="onAnimEnd">
-    <view class="ms-head"></view>
+    <view class="ms-body">
+      <view class="ms-tail"></view>
+      <view class="ms-tail t2"></view>
+      <view class="ms-spark sp1"></view>
+      <view class="ms-spark sp2"></view>
+      <view class="ms-spark sp3"></view>
+      <view class="ms-flare-h"></view>
+      <view class="ms-flare-v"></view>
+      <view class="ms-head"></view>
+    </view>
   </view>
-  <!-- 第二幕：光点坠向掌心 -->
+  <!-- 第二幕：光点带着尾焰坠向掌心（加速下落） -->
   <view wx:if="{{phase === 'fall'}}" class="meteor-fall" bindanimationend="onAnimEnd"></view>
-  <!-- 第三幕：落成一颗可拆的星 -->
+  <!-- 第三幕：落成一颗可拆的星，落地时荡开一圈光 -->
   <view wx:if="{{phase === 'chip'}}" class="meteor-chip" hover-class="meteor-chip-tap" bindtap="openReply">
+    <view class="mc-halo"></view>
     <view class="mc-star"></view>
     <view class="mc-main">
       <view class="mc-txt">一颗星带着回音，落下来了</view>
