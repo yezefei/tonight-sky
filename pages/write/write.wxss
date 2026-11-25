@@ -9,3 +9,28 @@
   margin: 0 16rpx 16rpx 0; line-height: 1.8;
 }
 .chip.sel { border-color: rgba(255,215,154,.5); color: #ffd79a; background: rgba(255,215,154,.06); }
+
+/* 草稿恢复提示 */
+.draft-hint { margin-top: 18rpx; font-size: 22rpx; color: #525771; letter-spacing: .1em; }
+.draft-clear { color: #8b90a8; border-bottom: 1rpx dotted #525771; padding-bottom: 2rpx; }
+
+/* 语音输入 */
+.voice-row { margin-top: 24rpx; }
+.voice-btn {
+  display: inline-flex; align-items: center; gap: 14rpx;
+  padding: 16rpx 30rpx; border-radius: 999rpx;
+  border: 1rpx solid rgba(255,255,255,.12); color: #8b90a8;
+  font-size: 24rpx; letter-spacing: .16em;
+}
+.voice-btn.on { border-color: rgba(255,215,154,.5); color: #ffd79a; }
+/* 麦克风图标：胶囊机身 + U 形支架 + 底座 */
+.mic { position: relative; width: 14rpx; height: 22rpx; border-radius: 7rpx; background: #8b90a8; }
+.mic::after {
+  content: ''; position: absolute; left: 50%; top: 16rpx; width: 22rpx; height: 14rpx;
+  transform: translateX(-50%);
+  border: 2rpx solid #8b90a8; border-top: none; border-radius: 0 0 11rpx 11rpx;
+}
+.voice-btn.on .mic { background: #ffd79a; animation: micPulse 1.2s ease-in-out infinite; }
+.voice-btn.on .mic::after { border-color: #ffd79a; }
+@keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.voice-live { margin-top: 16rpx; color: #525771; font-size: 24rpx; line-height: 1.8; }

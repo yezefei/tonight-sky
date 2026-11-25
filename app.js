@@ -50,7 +50,9 @@ App({
         const star = list.find(x => x.shareId === it.shareId);
         if (!star) return;
         if (it.replyText && star.reply !== it.replyText) { star.reply = it.replyText; changed = true; }
-        if (!announced.has(it.shareId)) {
+        // 对方已打开（还没回）：标记一下，详情里显示「回音在路上」
+        if (it.opened && !star.opened && !star.reply) { star.opened = true; changed = true; }
+        if (it.replyText && !announced.has(it.shareId)) {
           announced.add(it.shareId);
           fresh.push(star.id);
         }

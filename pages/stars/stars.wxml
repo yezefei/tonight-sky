@@ -9,6 +9,13 @@
   </view>
   <view class="sl-hairline"></view>
 
+  <!-- 标签筛选：这一类型里出现过的标签 -->
+  <scroll-view wx:if="{{tags.length}}" scroll-x enhanced show-scrollbar="{{false}}" class="tag-scroll">
+    <view class="tag-chip {{tag === '' ? 'sel' : ''}}" hover-class="tap" bindtap="pickTag" data-v="">全部</view>
+    <view wx:for="{{tags}}" wx:key="*this" class="tag-chip {{tag === item ? 'sel' : ''}}"
+      hover-class="tap" bindtap="pickTag" data-v="{{item}}">{{item}}</view>
+  </scroll-view>
+
   <!-- 空状态 -->
   <view wx:if="{{!items.length}}" class="sl-empty">
     <view class="empty-star {{type}}"></view>

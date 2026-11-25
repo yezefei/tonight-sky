@@ -8,6 +8,14 @@
     <textarea class="worry" placeholder="想到什么就写什么，几个词也行" placeholder-class="ph"
       value="{{text}}" bindinput="onInput" maxlength="2000" auto-height focus="{{focus}}"></textarea>
   </view>
+  <view wx:if="{{draftRestored}}" class="draft-hint">上次没写完的，还留着 · <text class="draft-clear" bindtap="clearDraft">清空重写</text></view>
+  <view wx:if="{{hasVoice}}" class="voice-row">
+    <view class="voice-btn {{voiceOn ? 'on' : ''}}" hover-class="tap" bindtap="toggleVoice">
+      <view class="mic"></view>
+      <text>{{voiceOn ? '正在听 · 说完轻触结束' : '轻 触 说 话'}}</text>
+    </view>
+    <view wx:if="{{voiceLive}}" class="voice-live">{{voiceLive}}</view>
+  </view>
   <view style="margin-top:20rpx"><text class="starter-link" bindtap="useStarter">不知道从何说起？借一句话开头</text></view>
 
   <view class="tiny" style="margin-top:40rpx">想选个大方向也行，不选也没关系</view>

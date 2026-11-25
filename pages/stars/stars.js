@@ -29,7 +29,8 @@ Page({
   data: {
     navTop: 88, capTop: 26, capH: 32,
     type: 'worry', meta: TYPES.worry,
-    items: [], count: 0, hasMore: false
+    items: [], count: 0, hasMore: false,
+    tags: [], tag: ''
   },
 
   onLoad(options) {
@@ -60,6 +61,7 @@ Page({
         id: r.id,
         idx: seq[r.id],
         text: r.text,
+        tag: r.tag || '',
         meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : ''),
         reply: r.reply || '',
         sent: !!r.sent,
@@ -67,15 +69,35 @@ Page({
         month: ok ? `${d.getFullYear()} 年 ${d.getMonth() + 1} 月` : '更 早'
       };
     });
-    // 月份分组：每组第一张卡片带 group 字段，渲染成分组标题
+    // 这一类型里出现过的标签，作为筛选器（按首次出现排序）
+    const tags = [];
+    all.forEach(it => { if (it.tag && tags.indexOf(it.tag) < 0) tags.push(it.tag); });
+    this._allRaw = all;
+    this.setData({ tags });
+    this.applyFilter();
+  },
+
+  // 标签筛选 + 月份分组 + 分页
+  applyFilter() {
+    const tag = this.data.tag;
+    const raw = this._allRaw || [];
+    const filtered = (tag ? raw.filter(x => x.tag === tag) : raw).map(it => ({ ...it }));
     let last = '';
-    all.forEach(it => { if (it.month !== last) { it.group = it.month; last = it.month; } });
-    this._all = all;
-    this.setData({
-      items: all.slice(0, PAGE),
-      count: all.length,
-      hasMore: all.length > PAGE
+    filtered.forEach(it => {
+      if (it.month !== last) { it.group = it.month; last = it.month; }
     });
+    this._all = filtered;
+    this.setData({
+      items: filtered.slice(0, PAGE),
+      count: filtered.length,
+      hasMore: filtered.length > PAGE
+    });
+  },
+
+  pickTag(e) {
+    const v = e.currentTarget.dataset.v;
+    this.setData({ tag: this.data.tag === v ? '' : v });
+    this.applyFilter();
   },
 
   // 滑到底：续上下一批（100 条也只是一次次 15 张地展开）

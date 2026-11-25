@@ -26,6 +26,7 @@
     <view wx:if="{{replyText}}" class="reply-card">
       <view class="reply-meta">回音</view>
       <view class="reply-text">{{replyText}}</view>
+      <view wx:if="{{acked}}" class="ack-note">TA 收到了你的回音 ✦</view>
     </view>
 
     <block wx:if="{{!mine}}">

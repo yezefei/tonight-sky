@@ -74,3 +74,18 @@
   .comet-spin.go { animation-duration: 9999s; }
   .trail { display: none; }
 }
+
+/* 五轮呼吸后的收尾 */
+.calm-fin { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 12vh; animation: finIn 1.2s ease; }
+@keyframes finIn { from { opacity: 0; transform: translateY(20rpx); } to { opacity: 1; transform: none; } }
+.fin-star {
+  width: 34rpx; height: 34rpx; margin-bottom: 48rpx;
+  background: radial-gradient(circle, #FFE9C4 0%, #FFCE8A 55%, #C98F3F 100%);
+  clip-path: polygon(50% 0%,63% 37%,100% 50%,63% 63%,50% 100%,37% 63%,0% 50%,37% 37%);
+  filter: drop-shadow(0 0 14px rgba(255,206,138,.75));
+  animation: finPulse 2.4s ease-in-out infinite;
+}
+@keyframes finPulse { 0%, 100% { transform: scale(1); opacity: .85; } 50% { transform: scale(1.18); opacity: 1; } }
+.fin-title { font-family: 'Songti SC', 'Noto Serif CJK SC', serif; font-size: 48rpx; letter-spacing: .24em; text-indent: .24em; color: #F2EDD9; }
+.fin-sub { margin-top: 24rpx; font-size: 24rpx; letter-spacing: .18em; color: #6E7694; }
+.fin-btn { margin-top: 72rpx; width: 100%; }

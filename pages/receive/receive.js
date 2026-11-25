@@ -26,7 +26,8 @@ Page({
           phase: 'star',
           mine: !!res.mine,
           text: (res.payload && res.payload.text) || '',
-          replyText: res.replyText || ''
+          replyText: res.replyText || '',
+          acked: !!res.ack
         });
       })
       .catch(e => this.setData({ phase: e && e.code === 'GONE' ? 'gone' : 'error' }));

@@ -17,6 +17,7 @@
     <block wx:if="{{count === 0}}">
       <view class="sub">今晚心里装着的事，</view>
       <view class="sub">说完，就把它变成星星，放在天上。</view>
+      <view class="sub demo-link" hover-class="tap" bindtap="openDemo">先看看一颗星长什么样 →</view>
     </block>
     <block wx:else>
       <view class="sub sub-link" hover-class="tap" bindtap="openOrbit">你的夜空里，已经有 <text class="em link-em">{{count}} 颗星星</text>。</view>
@@ -89,17 +90,22 @@
     <view wx:if="{{sheet.reply}}" class="reply-card">
       <view class="reply-meta">回音</view>
       <view class="reply-text">{{sheet.reply}}</view>
+      <view wx:if="{{!sheet.acked}}" class="ack-btn" hover-class="tap" bindtap="ackReply">收 到 了 · 谢 谢 TA ✦</view>
+      <view wx:else class="ack-done">已告诉 TA，你收到了 ✓</view>
     </view>
-    <view wx:if="{{!sheet.done}}" class="turn" hover-class="tap" bindtap="turnStar">这 件 事 ， 翻 篇 了</view>
-    <view class="turn send" hover-class="tap" bindtap="sendStar">{{sending ? '正 在 包 这 颗 星 …' : '送 给 一 个 朋 友'}}</view>
-    <view style="text-align:center;margin-top:28rpx">
-      <view class="del" hover-class="tap" bindtap="sheetCard" style="margin-right:40rpx">存成卡片</view>
-      <view wx:if="{{sheet.sent}}" class="del" hover-class="tap" bindtap="checkReply">看看回音</view>
-    </view>
-    <view class="sheet-divider"></view>
-    <view style="text-align:center">
-      <view class="del faint" hover-class="tap" bindtap="delStar">让这颗星星熄灭（删除这条记录）</view>
-    </view>
+    <view wx:if="{{sheet.demo}}" class="demo-hint">这是示范星 · 写下你的第一句，它就会挂在天上</view>
+    <view wx:if="{{!sheet.done && !sheet.demo}}" class="turn" hover-class="tap" bindtap="turnStar">这 件 事 ， 翻 篇 了</view>
+    <view wx:if="{{!sheet.demo}}" class="turn send" hover-class="tap" bindtap="sendStar">{{sending ? '正 在 包 这 颗 星 …' : '送 给 一 个 朋 友'}}</view>
+    <block wx:if="{{!sheet.demo}}">
+      <view style="text-align:center;margin-top:28rpx">
+        <view class="del" hover-class="tap" bindtap="sheetCard" style="margin-right:40rpx">存成卡片</view>
+        <view wx:if="{{sheet.sent}}" class="del" hover-class="tap" bindtap="checkReply">看看回音</view>
+      </view>
+      <view class="sheet-divider"></view>
+      <view style="text-align:center">
+        <view class="del faint" hover-class="tap" bindtap="delStar">让这颗星星熄灭（删除这条记录）</view>
+      </view>
+    </block>
   </view>
 
   <!-- 送星确认浮层（open-type=share 必须是 button，全局样式已重置） -->
@@ -138,6 +144,6 @@
   <!-- 翻篇仪式：金光一闪 -->
   <view class="gold-flash {{turnFlash ? 'on' : ''}}"></view>
 
-  <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
+  <view class="toast {{toast ? 'on' : ''}} {{toastUndo != null ? 'undo' : ''}}" bindtap="onToast">{{toast}}</view>
   <meteor />
 </view>

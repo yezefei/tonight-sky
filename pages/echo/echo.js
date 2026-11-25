@@ -28,6 +28,7 @@ Page({
     store.save(list, () => {});
     const g = getApp().globalData;
     g.freshId = id; g.justReleased = true; g.draft = { text: '', tag: '' };
+    try { wx.removeStorageSync('tonight-write-draft'); } catch (e) {}
 
     // 释放动画：文字化作光点飞向夜空
     wx.createSelectorQuery().select('#quoteCard').boundingClientRect(rect => {

@@ -51,6 +51,7 @@ exports.main = async (event) => {
         lineIdx: s.payload && s.payload.lineIdx
       },
       replyText: s.reply ? decText({ v: s.reply, enc: s.replyEnc }) : '',
+      ack: !!s.ack,
       createdAt: s.createdAt
     };
   } catch (e) {

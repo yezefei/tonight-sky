@@ -18,7 +18,7 @@ Page({
     shareOn: false, sending: false, turnFlash: false,
     rvOn: false, rv: { meta: '', text: '', more: [] },
     rvWrite: false, rvText: '',
-    toast: ''
+    toast: '', toastUndo: null
   },
   revisitDays: REVISIT_DAYS,
   beckonId: null, sheetId: null, rvId: null, toastTimer: null,
@@ -165,8 +165,26 @@ Page({
 
   showToast(msg) {
     clearTimeout(this.toastTimer);
-    this.setData({ toast: msg });
+    this.setData({ toast: msg, toastUndo: null });
     this.toastTimer = setTimeout(() => this.setData({ toast: '' }), 3600);
+  },
+
+  // 可撤销的 toast：「翻篇」这种重操作给一个反悔窗口
+  showUndoToast(msg, undoId) {
+    clearTimeout(this.toastTimer);
+    this.setData({ toast: msg, toastUndo: undoId });
+    this.toastTimer = setTimeout(() => this.setData({ toast: '', toastUndo: null }), 5000);
+  },
+  onToast() {
+    const id = this.data.toastUndo;
+    if (id == null) return;
+    const list = store.load();
+    const i = list.findIndex(x => x.id === id);
+    if (i > -1) { list[i].done = false; store.save(list, () => {}); }
+    clearTimeout(this.toastTimer);
+    this.setData({ toast: '已撤销，它还在原来的轨道上', toastUndo: null });
+    this.toastTimer = setTimeout(() => this.setData({ toast: '' }), 2200);
+    this.buildSky();
   },
 
   /* ── 星星详情 ── */
@@ -183,9 +201,24 @@ Page({
     this.setData({
       sheetOn: true,
       sheet: {
-        meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : '') + (r.reply ? ' · 收到回复' : (r.sent ? ' · 已送出，等一颗回音' : '')),
-        text: r.text, done: !!r.done,
-        reply: r.reply || '', sent: !!r.sent
+        meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : '') + (r.reply ? ' · 收到回复' : (r.sent ? (r.opened ? ' · 对方已打开，回音在路上' : ' · 已送出，等一颗回音') : '')),
+        text: r.text, done: !!r.done, demo: false,
+        reply: r.reply || '', sent: !!r.sent,
+        acked: !!r.ack
+      }
+    });
+  },
+  // 第一夜的示范星：让新用户先看看「一颗星」长什么样
+  openDemo() {
+    this.sheetId = null;
+    this.sheetStar = null;
+    this.setData({
+      sheetOn: true,
+      sheet: {
+        demo: true,
+        meta: '示范星 · 一个示例',
+        text: '比如：「明天的汇报还没准备好，越想越睡不着。」——写下来，它就会变成一颗星，挂在你的夜空里。',
+        done: false, reply: '', sent: false, acked: false
       }
     });
   },
@@ -304,7 +337,21 @@ Page({
     this.closeSheets();
     this.buildSky();
     setTimeout(() => this.setData({ turnFlash: false }), 1900);
-    this.showToast('这颗星，从今天起是金色的 ✦');
+    this.showUndoToast('这颗星镀金了 ✦ · 点我撤销', id);
+  },
+
+  // 收到回音之后：告诉对方「我收到了」
+  ackReply() {
+    const r = this.sheetStar;
+    if (!r || !r.shareId || !cloudApi.ready()) return;
+    cloudApi.call('shareAck', { shareId: r.shareId }).then(() => {
+      const list = store.load();
+      const i = list.findIndex(x => x.id === r.id);
+      if (i > -1) { list[i].ack = true; store.save(list, () => {}); }
+      r.ack = true;
+      this.setData({ 'sheet.acked': true });
+      try { wx.vibrateShort({ type: 'light' }); } catch (e) {}
+    }).catch(() => this.showToast('网络不太好，稍后再试'));
   },
 
   /* ── 星回 ── */

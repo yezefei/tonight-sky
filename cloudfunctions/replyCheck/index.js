@@ -30,6 +30,18 @@ exports.main = async () => {
       }
       return { shareId: s._id, replyText, repliedAt: s.repliedAt || 0 };
     });
+
+    // 顺带带出「对方已打开、还没回」的分享：让发送方看到「回音在路上」
+    const openedRes = await db.collection('shares')
+      .where({ from: OPENID, status: 'opened' })
+      .orderBy('openedAt', 'desc')
+      .limit(20)
+      .get()
+      .catch(() => null);
+    ((openedRes && openedRes.data) || []).forEach(s => {
+      items.push({ shareId: s._id, opened: true, openedAt: s.openedAt || 0 });
+    });
+
     return { code: 'OK', items };
   } catch (e) {
     console.error('replyCheck error', e);

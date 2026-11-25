@@ -194,3 +194,18 @@
   .bg-star, .sky-star { animation-duration: .01s; animation-iteration-count: 1; }
   .sky-star.turning { animation-duration: .8s; animation-iteration-count: 1; }
 }
+
+/* 示范星入口 + 提示 */
+.demo-link { color: #7c84a6; margin-top: 24rpx; font-size: 24rpx; letter-spacing: .14em; }
+.demo-hint { text-align: center; margin-top: 32rpx; color: #525771; font-size: 22rpx; letter-spacing: .12em; line-height: 2; }
+
+/* 回音回执：我收到了 */
+.ack-btn {
+  display: inline-block; margin-top: 20rpx; padding: 12rpx 28rpx; border-radius: 999rpx;
+  border: 1rpx solid rgba(255,206,138,.4); color: #ffd79a;
+  font-size: 22rpx; letter-spacing: .2em; text-indent: .2em;
+}
+.ack-done { margin-top: 20rpx; color: #6E7694; font-size: 22rpx; letter-spacing: .14em; }
+
+/* 可撤销的 toast 提示可点 */
+.toast.undo { border-color: rgba(255,206,138,.35); }
