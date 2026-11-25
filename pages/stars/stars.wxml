@@ -1,0 +1,40 @@
+<view class="page-list" style="padding-top:{{navTop}}px">
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+
+  <!-- 页头：深空观测台 -->
+  <view class="sl-head">
+    <view class="sl-eyebrow">{{meta.eyebrow}}</view>
+    <view class="sl-title">{{meta.title}}</view>
+    <view class="sl-sub">{{meta.hint}} · 共 {{count}} 颗</view>
+  </view>
+  <view class="sl-hairline"></view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{!items.length}}" class="sl-empty">
+    <view class="empty-star {{type}}"></view>
+    <view class="empty-txt">{{meta.empty}}</view>
+  </view>
+
+  <!-- 星志卡片 -->
+  <view wx:for="{{items}}" wx:key="id" class="sl-card" hover-class="sl-card-tap"
+    bindtap="openStar" data-id="{{item.id}}">
+    <view class="card-top">
+      <view class="star-ic {{type}}"></view>
+      <view class="card-idx">NO.{{item.idx}}</view>
+      <view class="card-del" hover-class="tap" catchtap="delStar" data-id="{{item.id}}">熄 灭</view>
+    </view>
+    <view class="card-txt">{{item.text}}</view>
+    <view class="card-meta">{{item.meta}}</view>
+
+    <view wx:if="{{item.reply}}" class="reply-card">
+      <view class="reply-meta">回音</view>
+      <view class="reply-text">{{item.reply}}</view>
+    </view>
+    <view wx:elif="{{item.sent}}" class="sent-tag">已送出 · 等一颗回音</view>
+    <view wx:if="{{item.done}}" class="gold-tag">已翻篇 ✦</view>
+  </view>
+
+  <view wx:if="{{items.length}}" class="sl-hint">轻 触 卡 片 · 回 到 星 空 看 它</view>
+
+  <meteor />
+</view>

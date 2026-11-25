@@ -131,6 +131,11 @@ Page({
 
   goWrite() { wx.navigateTo({ url: '/pages/write/write' }); },
   goCalm() { wx.navigateTo({ url: '/pages/calm/calm' }); },
+  // 底部图例：进入对应类型的星志列表页
+  goList(e) {
+    const type = e.currentTarget.dataset.type || 'worry';
+    wx.navigateTo({ url: `/pages/stars/stars?type=${type}` });
+  },
   dismissRelease() {
     const g = getApp().globalData;
     g.justReleased = false;

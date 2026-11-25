@@ -5,7 +5,8 @@
     "pages/receive/receive",
     "pages/write/write",
     "pages/echo/echo",
-    "pages/calm/calm"
+    "pages/calm/calm",
+    "pages/stars/stars"
   ],
   "window": {
     "navigationStyle": "custom",

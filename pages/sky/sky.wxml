@@ -70,9 +70,9 @@
     </view>
     <view class="orbit-hairline"></view>
     <view class="orbit-legend">
-      <view class="lg"><view class="lg-dot"></view>心事</view>
-      <view class="lg"><view class="lg-dot blue"></view>有回音</view>
-      <view class="lg"><view class="lg-dot gold"></view>已翻篇</view>
+      <view class="lg" hover-class="lg-tap" bindtap="goList" data-type="worry"><view class="lg-dot"></view>心事</view>
+      <view class="lg" hover-class="lg-tap" bindtap="goList" data-type="replied"><view class="lg-dot blue"></view>有回音</view>
+      <view class="lg" hover-class="lg-tap" bindtap="goList" data-type="gold"><view class="lg-dot gold"></view>已翻篇</view>
     </view>
     <view class="orbit-hint">轻 触 一 颗 星 · 看 看 它 装 着 什 么</view>
   </view>
