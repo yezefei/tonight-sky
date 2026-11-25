@@ -119,11 +119,10 @@ Page({
 
   goBack() { wx.navigateBack({ delta: 1 }); },
 
-  // 点卡片：回到星空，直接展开这颗星
+  // 点卡片：进入这颗星的详情页（弹窗只留给恒星环绕页）
   openStar(e) {
     const id = e.currentTarget.dataset.id;
-    getApp().globalData.openStarId = id;
-    wx.navigateBack({ delta: 1 });
+    wx.navigateTo({ url: `/pages/star/star?id=${id}` });
   },
 
   // 熄灭（删除）：本地删掉，星空页 onShow 重建时自动联动

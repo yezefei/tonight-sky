@@ -6,7 +6,8 @@
     "pages/write/write",
     "pages/echo/echo",
     "pages/calm/calm",
-    "pages/stars/stars"
+    "pages/stars/stars",
+    "pages/star/star"
   ],
   "window": {
     "navigationStyle": "custom",

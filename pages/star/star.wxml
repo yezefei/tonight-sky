@@ -1,0 +1,67 @@
+<view class="page-list" style="padding-top:{{navTop}}px">
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+
+  <!-- 星已不在（被删过）兜底 -->
+  <view wx:if="{{gone}}" class="sd-gone">
+    <view class="gone-txt">这颗星已经不在了。</view>
+    <view class="btn-main" hover-class="btn-hover" bindtap="goBack">返 回</view>
+  </view>
+
+  <block wx:else>
+    <!-- 页头 -->
+    <view class="sd-head">
+      <view class="sd-eyebrow">STAR · NO.{{idx}}</view>
+      <view class="sd-title">{{done ? '一 颗 金 色 的 星' : '一 颗 星'}}</view>
+      <view class="sd-sub">{{meta}}{{tag ? ' · ' + tag : ''}}</view>
+    </view>
+    <view class="sd-hairline"></view>
+
+    <!-- 查看模式 -->
+    <block wx:if="{{!editing}}">
+      <view class="sd-text">{{text}}</view>
+
+      <view wx:if="{{reply}}" class="reply-card">
+        <view class="reply-meta">回音</view>
+        <view class="reply-text">{{reply}}</view>
+        <view wx:if="{{!acked}}" class="ack-btn" hover-class="tap" bindtap="ack">收 到 了 · 谢 谢 TA ✦</view>
+        <view wx:else class="ack-done">已告诉 TA，你收到了 ✓</view>
+      </view>
+      <view wx:elif="{{sent}}" class="sent-tag">{{opened ? '对方已打开，回音在路上' : '已送出 · 等一颗回音'}}</view>
+      <view wx:if="{{done}}" class="gold-tag">已翻篇 ✦</view>
+
+      <view class="sd-actions">
+        <view wx:if="{{!done}}" class="btn-main" hover-class="btn-hover" bindtap="turn">这 件 事 ， 翻 篇 了</view>
+        <button wx:if="{{shareReady}}" class="btn-ghost" open-type="share">选 一 个 朋 友 ， 送 出 去</button>
+        <view wx:else class="btn-ghost {{sending ? 'dis' : ''}}" hover-class="btn-hover" bindtap="prepareShare">{{sending ? '正 在 包 这 颗 星 …' : '送 给 一 个 朋 友'}}</view>
+
+        <view class="sd-row">
+          <view class="sd-link" hover-class="tap" bindtap="startEdit">修改内容</view>
+          <view class="sd-link" hover-class="tap" bindtap="makeCard">存成卡片</view>
+        </view>
+        <view class="sd-del" hover-class="tap" bindtap="del">让这颗星星熄灭（删除这条记录）</view>
+      </view>
+    </block>
+
+    <!-- 编辑模式 -->
+    <block wx:else>
+      <view class="edit-box">
+        <textarea class="edit-area" value="{{editText}}" bindinput="onEditInput"
+          maxlength="2000" auto-height focus placeholder="想到什么就写什么" placeholder-class="ph"></textarea>
+      </view>
+      <view class="chips">
+        <view wx:for="{{chips}}" wx:key="*this" hover-class="tap"
+          class="chip {{editTag === item ? 'sel' : ''}}" bindtap="pickChip" data-v="{{item}}">{{item}}</view>
+      </view>
+      <view class="edit-actions">
+        <view class="btn-main {{canSave ? '' : 'dis'}}" hover-class="btn-hover" bindtap="saveEdit">保 存</view>
+        <view class="link-quiet" hover-class="tap" bindtap="cancelEdit">取消</view>
+      </view>
+    </block>
+  </block>
+
+  <!-- 翻篇撤销条 -->
+  <view wx:if="{{undoOn}}" class="sd-undo" hover-class="tap" bindtap="undoTurn">这颗星镀金了 ✦ · 点我撤销</view>
+
+  <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
+  <meteor />
+</view>

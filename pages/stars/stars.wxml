@@ -45,7 +45,7 @@
   </block>
 
   <view wx:if="{{hasMore}}" class="sl-hint">下 滑 · 再 翻 十 五 颗</view>
-  <view wx:elif="{{items.length}}" class="sl-hint">— 到 底 啦 · 轻 触 卡 片 回 星 空 看 它 —</view>
+  <view wx:elif="{{items.length}}" class="sl-hint">— 到 底 啦 · 轻 触 卡 片 看 这 颗 星 —</view>
 
   <meteor />
 </view>
