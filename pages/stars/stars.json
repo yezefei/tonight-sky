@@ -1,6 +1,7 @@
 {
   "navigationStyle": "custom",
   "backgroundColor": "#05060e",
+  "onReachBottomDistance": 80,
   "usingComponents": {
     "meteor": "/components/meteor/meteor"
   }

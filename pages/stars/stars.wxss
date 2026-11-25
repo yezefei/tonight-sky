@@ -82,3 +82,13 @@
 .gold-tag { margin-top: 22rpx; font-size: 21rpx; letter-spacing: .24em; color: #C9A86A; }
 
 .sl-hint { margin-top: 60rpx; text-align: center; font-size: 20rpx; letter-spacing: .3em; text-indent: .3em; color: #3A4054; }
+
+/* 月份分组标题 */
+.sl-group {
+  margin: 48rpx 0 4rpx; display: flex; align-items: center;
+  font-family: monospace; font-size: 20rpx; letter-spacing: .34em; color: rgba(169,188,255,.6);
+}
+.sl-group::after {
+  content: ''; flex: 1; margin-left: 24rpx; height: 1rpx;
+  background: linear-gradient(90deg, rgba(200,210,255,.12), transparent);
+}

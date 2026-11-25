@@ -23,11 +23,13 @@ const TYPES = {
   }
 };
 
+const PAGE = 15; // 每批渲染的卡片数：首屏轻快，滑到底再续下一批
+
 Page({
   data: {
     navTop: 88, capTop: 26, capH: 32,
     type: 'worry', meta: TYPES.worry,
-    items: [], count: 0
+    items: [], count: 0, hasMore: false
   },
 
   onLoad(options) {
@@ -51,16 +53,38 @@ Page({
       replied: r => !r.done && !!r.reply,
       gold: r => !!r.done
     }[this.data.type];
-    const items = list.filter(pick).sort((a, b) => b.id - a.id).map(r => ({
-      id: r.id,
-      idx: seq[r.id],
-      text: r.text,
-      meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : ''),
-      reply: r.reply || '',
-      sent: !!r.sent,
-      done: !!r.done
-    }));
-    this.setData({ items, count: items.length });
+    const all = list.filter(pick).sort((a, b) => b.id - a.id).map(r => {
+      const d = new Date(r.t || r.id);
+      const ok = !isNaN(d.getTime());
+      return {
+        id: r.id,
+        idx: seq[r.id],
+        text: r.text,
+        meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : ''),
+        reply: r.reply || '',
+        sent: !!r.sent,
+        done: !!r.done,
+        month: ok ? `${d.getFullYear()} 年 ${d.getMonth() + 1} 月` : '更 早'
+      };
+    });
+    // 月份分组：每组第一张卡片带 group 字段，渲染成分组标题
+    let last = '';
+    all.forEach(it => { if (it.month !== last) { it.group = it.month; last = it.month; } });
+    this._all = all;
+    this.setData({
+      items: all.slice(0, PAGE),
+      count: all.length,
+      hasMore: all.length > PAGE
+    });
+  },
+
+  // 滑到底：续上下一批（100 条也只是一次次 15 张地展开）
+  onReachBottom() {
+    const all = this._all || [];
+    const cur = this.data.items.length;
+    if (cur >= all.length) return;
+    const next = all.slice(0, cur + PAGE);
+    this.setData({ items: next, hasMore: next.length < all.length });
   },
 
   goBack() { wx.navigateBack({ delta: 1 }); },

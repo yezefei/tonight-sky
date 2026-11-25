@@ -15,26 +15,30 @@
     <view class="empty-txt">{{meta.empty}}</view>
   </view>
 
-  <!-- 星志卡片 -->
-  <view wx:for="{{items}}" wx:key="id" class="sl-card" hover-class="sl-card-tap"
-    bindtap="openStar" data-id="{{item.id}}">
-    <view class="card-top">
-      <view class="star-ic {{type}}"></view>
-      <view class="card-idx">NO.{{item.idx}}</view>
-      <view class="card-del" hover-class="tap" catchtap="delStar" data-id="{{item.id}}">熄 灭</view>
-    </view>
-    <view class="card-txt">{{item.text}}</view>
-    <view class="card-meta">{{item.meta}}</view>
+  <!-- 星志卡片（按月份分组，触底分批加载） -->
+  <block wx:for="{{items}}" wx:key="id">
+    <view wx:if="{{item.group}}" class="sl-group">{{item.group}}</view>
+    <view class="sl-card" hover-class="sl-card-tap"
+      bindtap="openStar" data-id="{{item.id}}">
+      <view class="card-top">
+        <view class="star-ic {{type}}"></view>
+        <view class="card-idx">NO.{{item.idx}}</view>
+        <view class="card-del" hover-class="tap" catchtap="delStar" data-id="{{item.id}}">熄 灭</view>
+      </view>
+      <view class="card-txt">{{item.text}}</view>
+      <view class="card-meta">{{item.meta}}</view>
 
-    <view wx:if="{{item.reply}}" class="reply-card">
-      <view class="reply-meta">回音</view>
-      <view class="reply-text">{{item.reply}}</view>
+      <view wx:if="{{item.reply}}" class="reply-card">
+        <view class="reply-meta">回音</view>
+        <view class="reply-text">{{item.reply}}</view>
+      </view>
+      <view wx:elif="{{item.sent}}" class="sent-tag">已送出 · 等一颗回音</view>
+      <view wx:if="{{item.done}}" class="gold-tag">已翻篇 ✦</view>
     </view>
-    <view wx:elif="{{item.sent}}" class="sent-tag">已送出 · 等一颗回音</view>
-    <view wx:if="{{item.done}}" class="gold-tag">已翻篇 ✦</view>
-  </view>
+  </block>
 
-  <view wx:if="{{items.length}}" class="sl-hint">轻 触 卡 片 · 回 到 星 空 看 它</view>
+  <view wx:if="{{hasMore}}" class="sl-hint">下 滑 · 再 翻 十 五 颗</view>
+  <view wx:elif="{{items.length}}" class="sl-hint">— 到 底 啦 · 轻 触 卡 片 回 星 空 看 它 —</view>
 
   <meteor />
 </view>
