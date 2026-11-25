@@ -1,4 +1,28 @@
-.card-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32rpx 0; min-height: 58vh; }
-.card-img { width: 540rpx; height: 864rpx; border-radius: 24rpx; box-shadow: 0 24rpx 90rpx rgba(0,0,0,.55); }
+.style-sub { text-align: center; margin-top: 14rpx; color: #525771; font-size: 20rpx; letter-spacing: .3em; text-indent: .3em; }
+
+/* 卡面滑动 */
+.card-swiper { height: 760rpx; margin-top: 24rpx; }
+.card-wrap { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
+.card-img { width: 440rpx; height: 704rpx; border-radius: 22rpx; box-shadow: 0 24rpx 90rpx rgba(0,0,0,.55); transition: transform .3s ease, opacity .3s ease; }
+.card-img.side { transform: scale(.88); opacity: .55; }
 .card-loading { color: #525771; font-size: 26rpx; letter-spacing: .1em; }
+
+/* 会员卡角标 */
+.lock-badge {
+  position: absolute; top: 20rpx; right: 82rpx; z-index: 2;
+  padding: 8rpx 20rpx; border-radius: 999rpx;
+  background: rgba(12,10,18,.82); border: 1rpx solid rgba(255,206,138,.45);
+  color: #FFCE8A; font-size: 18rpx; letter-spacing: .18em;
+}
+
+/* 风格选择器 */
+.style-row { display: flex; justify-content: center; flex-wrap: wrap; margin: 8rpx 0 26rpx; }
+.style-chip {
+  margin: 0 10rpx 12rpx; padding: 10rpx 26rpx; border-radius: 999rpx;
+  border: 1rpx solid rgba(255,255,255,.10); color: #8b90a8;
+  font-size: 22rpx; letter-spacing: .16em;
+}
+.style-chip.sel { border-color: rgba(255,215,154,.5); color: #ffd79a; background: rgba(255,215,154,.06); }
+.lock-tag { color: #FFCE8A; margin-left: 6rpx; }
+
 .offscreen { position: fixed; left: -2000px; top: 0; }
