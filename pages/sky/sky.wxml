@@ -35,8 +35,10 @@
   </view>
 
   <view wx:if="{{banner}}" class="revisit-banner" hover-class="tap" bindtap="openRevisit">{{banner}}</view>
-  <view wx:if="{{!justReleased}}" class="btn-main" hover-class="btn-hover" bindtap="goWrite">说 说 今 晚 的 事</view>
-  <view wx:if="{{!justReleased}}" class="link-quiet" hover-class="tap" bindtap="goCalm">不想说，就安静待一会儿</view>
+  <view wx:if="{{!justReleased}}" class="home-cta">
+    <view class="btn-main" hover-class="btn-hover" bindtap="goWrite">说 说 今 晚 的 事</view>
+    <view class="link-quiet" hover-class="tap" bindtap="goCalm">不想说，就安静待一会儿</view>
+  </view>
   <!-- 恒星轨道视图（深空观测台）：所有星星绕恒星旋转，点星看原话（复用下方星星详情浮层，状态一致） -->
   <view class="orbit-view {{orbitOn ? 'on' : ''}}" catchtouchmove="noop" bindtap="onOrbitBg">
     <view class="back orbit-back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="closeOrbit">‹</view>

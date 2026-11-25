@@ -159,6 +159,10 @@
   .orbit-star.turning { animation-duration: .8s; animation-iteration-count: 1; }
 }
 
+/* 首页底部 CTA：整体上移一点，主按钮和下方安静链接拉开距离，避免误点 */
+.home-cta { margin-bottom: calc(env(safe-area-inset-bottom) + 44rpx); }
+.home-cta .link-quiet { margin-top: 34rpx; padding: 26rpx 0; }
+
 .hero { margin-top: 14vh; position: relative; z-index: 2; }
 
 .after-release { display: none; text-align: center; margin-bottom: 20rpx; animation: rise 1.2s ease; }
