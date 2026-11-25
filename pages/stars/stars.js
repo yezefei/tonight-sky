@@ -3,6 +3,12 @@ const store = require('../../utils/store');
 const { navInfo } = require('../../utils/nav');
 
 const TYPES = {
+  all: {
+    eyebrow: 'STAR LOG · ALL',
+    title: '星 空',
+    hint: '这片夜空里的所有星',
+    empty: '夜空还空着。\n写下来的心事，都会变成星住进来。'
+  },
   worry: {
     eyebrow: 'STAR LOG · IN ORBIT',
     title: '心 事',
@@ -50,6 +56,7 @@ Page({
     const seq = {};
     [...list].sort((a, b) => a.id - b.id).forEach((r, i) => { seq[r.id] = String(i + 1).padStart(2, '0'); });
     const pick = {
+      all: () => true,
       worry: r => !r.done && !r.reply,
       replied: r => !r.done && !!r.reply,
       gold: r => !!r.done
@@ -62,6 +69,7 @@ Page({
         idx: seq[r.id],
         text: r.text,
         tag: r.tag || '',
+        cls: r.done ? 'gold' : (r.reply ? 'replied' : 'worry'),
         meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : ''),
         reply: r.reply || '',
         sent: !!r.sent,

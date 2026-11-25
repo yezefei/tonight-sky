@@ -20,9 +20,10 @@
       <view class="sub demo-link" hover-class="tap" bindtap="openDemo">先看看一颗星长什么样 →</view>
     </block>
     <block wx:else>
-      <view class="sub sub-link" hover-class="tap" bindtap="openOrbit">你的夜空里，已经有 <text class="em link-em">{{count}} 颗星星</text>。</view>
+      <view class="sub sub-link" hover-class="tap" bindtap="goList" data-type="all">你的夜空里，已经有 <text class="em link-em">{{count}} 颗星星</text>。</view>
       <view class="sub sub-link" wx:if="{{doneCount > 0}}" hover-class="tap" bindtap="goList" data-type="gold">其中 <text class="em link-em">{{doneCount}} 颗</text>，已经翻篇了。</view>
       <view class="sub" wx:else>每一颗，都是一个说出来了的夜晚。</view>
+      <view class="sub orbit-link" hover-class="tap" bindtap="openOrbit">从恒星旁边，看看它们 →</view>
     </block>
   </view>
 

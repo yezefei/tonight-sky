@@ -28,7 +28,7 @@
     <view class="sl-card" hover-class="sl-card-tap"
       bindtap="openStar" data-id="{{item.id}}">
       <view class="card-top">
-        <view class="star-ic {{type}}"></view>
+        <view class="star-ic {{item.cls}}"></view>
         <view class="card-idx">NO.{{item.idx}}</view>
         <view class="card-del" hover-class="tap" catchtap="delStar" data-id="{{item.id}}">熄 灭</view>
       </view>

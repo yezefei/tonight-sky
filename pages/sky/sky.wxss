@@ -197,6 +197,8 @@
 
 /* 示范星入口 + 提示 */
 .demo-link { color: #7c84a6; margin-top: 24rpx; font-size: 24rpx; letter-spacing: .14em; }
+/* 恒星环绕入口：比正文弱一级的安静链接 */
+.orbit-link { color: #7c84a6; margin-top: 32rpx; font-size: 24rpx; letter-spacing: .18em; }
 .demo-hint { text-align: center; margin-top: 32rpx; color: #525771; font-size: 22rpx; letter-spacing: .12em; line-height: 2; }
 
 /* 回音回执：我收到了 */
