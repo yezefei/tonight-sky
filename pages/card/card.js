@@ -82,7 +82,8 @@ function paintGold(ctx, card) {
   const bg = ctx.createLinearGradient(0, 0, 0, H);
   bg.addColorStop(0, '#0C0A12'); bg.addColorStop(0.5, '#07060B'); bg.addColorStop(1, '#030205');
   ctx.setFillStyle(bg); ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(W / 2, 240, 10, W / 2, 240, 280);
+  // 注意：旧版 canvas 的径向渐变叫 createCircularGradient（单圆心）
+  const glow = ctx.createCircularGradient(W / 2, 240, 280);
   glow.addColorStop(0, 'rgba(255,206,138,.22)'); glow.addColorStop(1, 'rgba(255,206,138,0)');
   ctx.setFillStyle(glow); ctx.fillRect(0, 0, W, H);
   stars(ctx, card.t || Date.now(), 60, H * 0.85, '255,220,170');
@@ -124,7 +125,7 @@ function paintAurora(ctx, card) {
     [W * 0.55, 330, 240, '224,139,184,.12']
   ];
   blobs.forEach(([x, y, r, c]) => {
-    const g = ctx.createRadialGradient(x, y, 10, x, y, r);
+    const g = ctx.createCircularGradient(x, y, r);
     g.addColorStop(0, `rgba(${c})`); g.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.setFillStyle(g); ctx.fillRect(0, 0, W, H);
   });
@@ -144,7 +145,7 @@ function paintAurora(ctx, card) {
 
 // 5. 星轨（会员）
 function paintOrbit(ctx, card) {
-  const bg = ctx.createRadialGradient(W / 2, 340, 40, W / 2, 340, 620);
+  const bg = ctx.createCircularGradient(W / 2, 340, 620);
   bg.addColorStop(0, '#0B1128'); bg.addColorStop(0.55, '#060913'); bg.addColorStop(1, '#030409');
   ctx.setFillStyle(bg); ctx.fillRect(0, 0, W, H);
   stars(ctx, card.t || Date.now(), 60, H * 0.85, '205,211,238');
@@ -153,7 +154,7 @@ function paintOrbit(ctx, card) {
     ctx.setStrokeStyle('rgba(200,210,255,.13)'); ctx.setLineWidth(1);
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
   });
-  const glow = ctx.createRadialGradient(cx, cy, 4, cx, cy, 60);
+  const glow = ctx.createCircularGradient(cx, cy, 60);
   glow.addColorStop(0, 'rgba(255,241,208,.9)'); glow.addColorStop(1, 'rgba(255,241,208,0)');
   ctx.setFillStyle(glow); ctx.beginPath(); ctx.arc(cx, cy, 60, 0, Math.PI * 2); ctx.fill();
   ctx.setFillStyle('#FFF1D0'); ctx.beginPath(); ctx.arc(cx, cy, 13, 0, Math.PI * 2); ctx.fill();
@@ -195,17 +196,23 @@ Page({
     this.renderAll();
   },
 
-  // 五张卡全部预渲染，滑动零等待
+  // 五张卡全部预渲染，滑动零等待；单张失败不影响其他（并在 Console 留下线索）
   renderAll() {
     STYLES.forEach((s, i) => {
       const ctx = wx.createCanvasContext('cardCanvas' + i, this);
-      s.paint(ctx, this.card);
+      try {
+        s.paint(ctx, this.card);
+      } catch (e) {
+        console.error('卡面绘制失败:', s.id, e);
+        return;
+      }
       ctx.draw(false, () => {
         wx.canvasToTempFilePath({
           canvasId: 'cardCanvas' + i,
           width: W, height: H,
           destWidth: W * 2, destHeight: H * 2,
-          success: r => this.setData({ [`styles[${i}].img`]: r.tempFilePath })
+          success: r => this.setData({ [`styles[${i}].img`]: r.tempFilePath }),
+          fail: e => console.error('卡面导出失败:', s.id, e)
         }, this);
       });
     });
