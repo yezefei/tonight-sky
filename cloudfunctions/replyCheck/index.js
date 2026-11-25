@@ -20,11 +20,16 @@ exports.main = async () => {
       .get()
       .catch(() => null);
 
-    const items = ((res && res.data) || []).map(s => ({
-      shareId: s._id,
-      replyText: s.reply ? decText({ v: s.reply, enc: s.replyEnc }) : '',
-      repliedAt: s.repliedAt || 0
-    }));
+    const items = ((res && res.data) || []).map(s => {
+      // 单条解密失败（比如环境变量没配）不拖垮整个列表：先放出去，内容置空
+      let replyText = '';
+      try {
+        replyText = s.reply ? decText({ v: s.reply, enc: s.replyEnc }) : '';
+      } catch (e) {
+        console.error('replyCheck decrypt fail', s._id, e);
+      }
+      return { shareId: s._id, replyText, repliedAt: s.repliedAt || 0 };
+    });
     return { code: 'OK', items };
   } catch (e) {
     console.error('replyCheck error', e);
