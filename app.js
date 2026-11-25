@@ -18,8 +18,23 @@ App({
       wx.cloud.init({ env: CLOUD_ENV, traceUser: true });
     }
     this.checkReplies();
+    this.startReplyPoll();
   },
-  onShow() { this.checkReplies(); },
+  onShow() {
+    this.checkReplies();
+    this.startReplyPoll();
+  },
+  onHide() { this.stopReplyPoll(); },
+
+  // 前台期间每 25s 问一次云端有没有新回音（收到就立刻播流星，不用切后台）
+  startReplyPoll() {
+    if (this._replyPoll || !cloudApi.ready()) return;
+    this._replyPoll = setInterval(() => this.checkReplies(), 25000);
+  },
+  stopReplyPoll() {
+    clearInterval(this._replyPoll);
+    this._replyPoll = null;
+  },
 
   // 拉取好友回音：写进本地星记录，未播报过的交给流星组件
   checkReplies() {
