@@ -13,4 +13,5 @@
   <view class="btn-main {{img && !saved ? '' : 'dis'}}" hover-class="btn-hover" bindtap="save">{{saved ? '已存进相册 ✓' : '存 进 相 册'}}</view>
   <button class="link-quiet" open-type="share">把「今晚先睡」分享给朋友</button>
   <view style="height:40rpx"></view>
+  <meteor />
 </view>

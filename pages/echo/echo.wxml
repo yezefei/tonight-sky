@@ -16,4 +16,5 @@
   <view class="btn-main {{releasing ? 'dis' : ''}}" hover-class="btn-hover" bindtap="release">放 它 走</view>
   <view class="link-quiet" hover-class="tap" bindtap="goBack">我还想再说一点</view>
   <view style="height:60rpx"></view>
+  <meteor />
 </view>

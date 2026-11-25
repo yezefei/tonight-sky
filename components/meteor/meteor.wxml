@@ -1,0 +1,16 @@
+<view wx:if="{{on}}" class="meteor-layer">
+  <!-- 第一幕：流星斜着划破夜空 -->
+  <view wx:if="{{phase === 'streak'}}" class="meteor-streak" bindanimationend="onAnimEnd">
+    <view class="ms-head"></view>
+  </view>
+  <!-- 第二幕：光点坠向掌心 -->
+  <view wx:if="{{phase === 'fall'}}" class="meteor-fall" bindanimationend="onAnimEnd"></view>
+  <!-- 第三幕：落成一颗可拆的星 -->
+  <view wx:if="{{phase === 'chip'}}" class="meteor-chip" hover-class="meteor-chip-tap" bindtap="openReply">
+    <view class="mc-star"></view>
+    <view class="mc-main">
+      <view class="mc-txt">一颗星带着回音，落下来了</view>
+      <view class="mc-go">点 开 看 看</view>
+    </view>
+  </view>
+</view>

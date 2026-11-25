@@ -25,6 +25,11 @@ exports.main = async (event) => {
     const { OPENID } = cloud.getWXContext();
     const mine = OPENID && s.from === OPENID;
 
+    // 发送方看到了回音：标记已读（replyCheck 不再下发，幂等、不阻塞返回）
+    if (mine && s.status === 'replied' && !s.replySeen) {
+      db.collection('shares').doc(id).update({ data: { replySeen: true } }).catch(() => {});
+    }
+
     // 原子流转 waiting → opened（只生效一次，且仅接收方触发）
     if (!mine && s.status === 'waiting') {
       await db.collection('shares').where({ _id: id, status: 'waiting' })

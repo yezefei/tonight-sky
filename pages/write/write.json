@@ -1,1 +1,6 @@
-{ "navigationStyle": "custom" }
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "meteor": "/components/meteor/meteor"
+  }
+}

@@ -45,8 +45,14 @@ Page({
 
   onShow() {
     this.buildSky();
-    // 放它走之后回到夜空：自动进入轨道视图，看着新星加入环绕（每次释放只自动一次）
+    // 流星落下来的星：直接替用户拆开
     const g = getApp().globalData;
+    if (g.openStarId != null) {
+      const id = g.openStarId;
+      g.openStarId = null;
+      setTimeout(() => this.openFromMeteor(id), 400);
+    }
+    // 放它走之后回到夜空：自动进入轨道视图，看着新星加入环绕（每次释放只自动一次）
     if (g.justReleased && !g.autoOrbitShown) {
       g.autoOrbitShown = true;
       setTimeout(() => this.setData({ orbitOn: true }), 900);
@@ -162,6 +168,9 @@ Page({
   onStar(e) {
     const id = e.currentTarget.dataset.id;
     if (id === this.beckonId) return this.openRevisit();
+    this.openStarById(id);
+  },
+  openStarById(id) {
     const r = store.load().find(x => x.id === id);
     if (!r) return;
     this.sheetId = id;
@@ -174,6 +183,25 @@ Page({
         reply: r.reply || '', sent: !!r.sent
       }
     });
+  },
+  // 流星带回来的星：先拉一次最新回音（shareOpen 会顺带在云端标记已读），再展开详情
+  openFromMeteor(id) {
+    const star = store.load().find(x => x.id === id);
+    if (!star) return;
+    if (star.shareId && cloudApi.ready()) {
+      cloudApi.call('shareOpen', { shareId: star.shareId })
+        .then(res => {
+          if (res.replyText) {
+            const list = store.load();
+            const i = list.findIndex(x => x.id === id);
+            if (i > -1) { list[i].reply = res.replyText; store.save(list, () => {}); }
+          }
+          this.openStarById(id);
+        })
+        .catch(() => this.openStarById(id));
+    } else {
+      this.openStarById(id);
+    }
   },
   closeSheets() { this.setData({ sheetOn: false, rvOn: false, rvWrite: false, shareOn: false }); this.sheetId = null; },
 

@@ -20,4 +20,5 @@
   <view class="btn-main {{canDone ? '' : 'dis'}}" hover-class="btn-hover" bindtap="done">说 完 了</view>
   <view class="link-quiet" hover-class="tap" bindtap="goCalm">写不出来，就陪我安静一会儿</view>
   <view style="height:60rpx"></view>
+  <meteor />
 </view>

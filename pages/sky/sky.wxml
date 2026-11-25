@@ -137,4 +137,5 @@
   <view class="gold-flash {{turnFlash ? 'on' : ''}}"></view>
 
   <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
+  <meteor />
 </view>

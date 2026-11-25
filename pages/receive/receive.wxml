@@ -62,4 +62,5 @@
   </block>
 
   <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
+  <meteor />
 </view>

@@ -25,4 +25,5 @@
 
   <view class="calm-tempo">IN 4S · OUT 6S · ROUND {{round}}</view>
   <view class="link-quiet calm-quit" hover-class="tap" bindtap="goBack">我差不多了</view>
+  <meteor />
 </view>
