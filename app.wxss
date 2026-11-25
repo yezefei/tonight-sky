@@ -54,7 +54,7 @@ button::after { border: none; }
 .link-quiet {
   display: block; width: 100%;
   background: none; border: none; color: #525771; font-size: 24rpx;
-  padding: 20rpx 0; letter-spacing: .06em; text-align: center;
+  margin-top: 30rpx; padding: 26rpx 0; letter-spacing: .06em; text-align: center;
 }
 /* 返回键：top/height 由页面内联传入（与胶囊按钮垂直居中对齐） */
 .back {
