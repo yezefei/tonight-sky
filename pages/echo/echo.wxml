@@ -13,7 +13,7 @@
   <view wx:if="{{ghost.show}}" class="ghost" style="left:{{ghost.left}}px;top:{{ghost.top}}px;width:{{ghost.width}}px;transform:{{ghost.transform}};opacity:{{ghost.opacity}};filter:blur({{ghost.blur}}px)">{{text}}</view>
 
   <view class="spacer"></view>
-  <view class="btn-main {{releasing ? 'dis' : ''}}" hover-class="btn-hover" bindtap="release">放 它 走</view>
+  <view class="btn-main {{releasing ? 'dis' : ''}}" hover-class="btn-hover" bindtap="release">托 给 夜 空</view>
   <view class="link-quiet" hover-class="tap" bindtap="goBack">我还想再说一点</view>
   <view style="height:60rpx"></view>
   <meteor />
