@@ -42,6 +42,24 @@
   background: radial-gradient(circle at 38% 34%, #FFFDF6 0%, #FFE9BE 50%, #F2B96D 100%);
   box-shadow: 0 0 12px 4px rgba(255,230,180,.85), 0 0 40px 14px rgba(255,214,150,.30);
 }
+/* 光点跟着呼吸缩放：吸(0→40%, 4s)缓缓收小，呼(40→100%, 6s)渐渐放大，光晕同步涨落 */
+.comet-spin.go .comet { animation: cometBreath 10s linear infinite; }
+@keyframes cometBreath {
+  0% {
+    transform: translate(-50%, -50%) scale(1.38);
+    box-shadow: 0 0 16px 6px rgba(255,230,180,.95), 0 0 56px 20px rgba(255,214,150,.38);
+    animation-timing-function: cubic-bezier(.42, 0, .72, 1);   /* 吸：先慢后快收小 */
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(.62);
+    box-shadow: 0 0 8px 3px rgba(255,230,180,.6), 0 0 26px 8px rgba(255,214,150,.16);
+    animation-timing-function: cubic-bezier(.28, 0, .36, 1);   /* 呼：缓缓释放放大 */
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.38);
+    box-shadow: 0 0 16px 6px rgba(255,230,180,.95), 0 0 56px 20px rgba(255,214,150,.38);
+  }
+}
 .trail {
   position: absolute; left: 50%; top: 0; border-radius: 50%;
   background: #FFCE8A; box-shadow: 0 0 8px 2px rgba(255,206,138,.5);
@@ -72,6 +90,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .comet-spin.go { animation-duration: 9999s; }
+  .comet-spin.go .comet { animation: none; }
   .trail { display: none; }
 }
 
