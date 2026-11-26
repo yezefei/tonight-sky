@@ -1,0 +1,63 @@
+/* 自定义 tabBar · 方案 A「悬浮胶囊」
+   去掉通栏色带，改为居中窄胶囊浮在夜空上，两侧星空露出来；
+   图标与文字横排，选中项金色。金线 / 渐隐层节点保留但隐藏。 */
+.tabbar {
+  position: fixed; left: 50%; right: auto; transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom) + 52rpx);
+  z-index: 800; box-sizing: border-box;
+  width: 552rpx; height: 108rpx; padding: 0 12rpx;
+  display: flex; align-items: stretch;
+  border-radius: 999rpx;
+  background: rgba(14,17,30,.78);
+  border: 1rpx solid rgba(255,215,154,.14);
+  backdrop-filter: blur(32rpx); -webkit-backdrop-filter: blur(32rpx);
+  box-shadow: 0 16rpx 60rpx rgba(0,0,0,.4);
+}
+.tabbar-line, .tabbar-fade { display: none; }
+
+.tab {
+  flex: 1; display: flex; flex-direction: row; align-items: center; justify-content: center;
+}
+.ic {
+  width: 44rpx; height: 44rpx; position: relative; flex: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.tab-label {
+  margin-left: 12rpx; font-size: 22rpx;
+  letter-spacing: .1em; color: #8b90a8; transition: color .3s;
+}
+.tab.on .tab-label { color: #ffd79a; }
+
+/* 今夜：一弯月牙 */
+.ic-moon {
+  width: 36rpx; height: 36rpx; border-radius: 50%;
+  border: 4rpx solid #6b7189; border-right-color: transparent;
+  transform: rotate(-28deg); transition: border-color .3s;
+}
+.tab.on .ic-moon {
+  border-color: #ffd79a; border-right-color: transparent;
+  box-shadow: 0 0 16rpx rgba(255,215,154,.35);
+}
+
+/* 星空：四角星 */
+.ic-star {
+  width: 34rpx; height: 34rpx; background: #6b7189;
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+  transition: background .3s;
+}
+.tab.on .ic-star { background: #ffd79a; filter: drop-shadow(0 0 10rpx rgba(255,215,154,.6)); }
+
+/* 我的：极简人形 */
+.ic-me { width: 40rpx; height: 40rpx; }
+.me-head {
+  position: absolute; left: 50%; top: 2rpx; transform: translateX(-50%);
+  width: 16rpx; height: 16rpx; border-radius: 50%;
+  background: #6b7189; transition: background .3s;
+}
+.me-body {
+  position: absolute; left: 50%; bottom: 2rpx; transform: translateX(-50%);
+  width: 34rpx; height: 18rpx; border-radius: 18rpx 18rpx 10rpx 10rpx;
+  background: #6b7189; transition: background .3s;
+}
+.tab.on .me-head, .tab.on .me-body { background: #ffd79a; }
+.tab.on .ic-me { filter: drop-shadow(0 0 8rpx rgba(255,215,154,.4)); }

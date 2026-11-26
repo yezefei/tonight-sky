@@ -5,6 +5,14 @@ const cloudApi = require('./cloud');
 const ENABLED_KEY = 'tonight-sync-enabled';
 const LAST_KEY = 'tonight-sync-last';
 const DEBOUNCE = 1500;
+const LOCAL_ONLY = store.LOCAL_ONLY_FIELDS || [];
+
+// 上传前剥掉仅本地字段；合并后从本地回填，避免服务端版本覆盖掉它们
+function stripLocal(s) {
+  const o = Object.assign({}, s);
+  LOCAL_ONLY.forEach(k => { delete o[k]; });
+  return o;
+}
 
 function enabled() {
   try { return !!wx.getStorageSync(ENABLED_KEY); } catch (e) { return false; }
@@ -33,14 +41,23 @@ function schedule(delay) {
 // 服务端已经合并过一次；这里再按 updatedAt 合并，保护「同步过程中」产生的新本地改动
 function merge(local, remote) {
   const map = {};
-  (local || []).forEach(r => { map[r.id] = Object.assign({}, r); });
+  const localMap = {};
+  (local || []).forEach(r => {
+    localMap[r.id] = r;
+    map[r.id] = Object.assign({}, r);
+  });
   (remote || []).forEach(r => {
     const cur = map[r.id];
     if (!cur || (r.updatedAt || 0) >= (cur.updatedAt || 0)) {
       map[r.id] = Object.assign({}, r); // 同时间以服务端为准
     }
   });
-  return Object.keys(map).map(k => map[k]).sort((a, b) => a.id - b.id);
+  return Object.keys(map).map(k => {
+    const out = map[k];
+    const l = localMap[k];
+    if (l) LOCAL_ONLY.forEach(f => { if (l[f] !== undefined) out[f] = l[f]; });
+    return out;
+  }).sort((a, b) => a.id - b.id);
 }
 
 function sync() {
@@ -50,7 +67,7 @@ function sync() {
   return Promise.resolve()
     .then(() => {
       store.purgeOld();
-      const local = store.loadAll();
+      const local = store.loadAll().map(stripLocal);
       return cloudApi.call('starsSync', { stars: local });
     })
     .then(res => {
@@ -68,4 +85,4 @@ function sync() {
     .then(ok => { running = false; return ok; });
 }
 
-module.exports = { enabled, setEnabled, lastAt, canSync, schedule, sync, merge };
+module.exports = { enabled, setEnabled, lastAt, canSync, schedule, sync, merge, stripLocal };

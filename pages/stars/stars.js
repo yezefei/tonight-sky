@@ -1,5 +1,6 @@
 // 星志列表：按类型（心事/有回音/已翻篇）列出星星，支持删除、点卡片回星空定位
 const store = require('../../utils/store');
+const skyUtil = require('../../utils/sky');
 const { navInfo } = require('../../utils/nav');
 
 const TYPES = {
@@ -31,34 +32,82 @@ const TYPES = {
 
 const PAGE = 15; // 每批渲染的卡片数：首屏轻快，滑到底再续下一批
 
+// 纯本地统计：不上传、不进云同步
+function statRange(list, from) {
+  const items = (list || []).filter(r => (r.t || r.id) >= from);
+  const counts = {};
+  items.forEach(r => { if (r.tag) counts[r.tag] = (counts[r.tag] || 0) + 1; });
+  const top = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0] || '';
+  // 只陈述「写过几天」，不计算平均强度：情绪不打分
+  const days = {};
+  items.forEach(r => {
+    const d = new Date(r.t || r.id);
+    days[`${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`] = 1;
+  });
+  return { count: items.length, top, days: Object.keys(days).length };
+}
+
 Page({
   data: {
     navTop: 88, capTop: 26, capH: 32,
     type: 'worry', meta: TYPES.worry,
+    types: [
+      { key: 'all', label: '全部' },
+      { key: 'worry', label: '心事' },
+      { key: 'replied', label: '有回音' },
+      { key: 'gold', label: '已翻篇' }
+    ],
     items: [], count: 0, hasMore: false,
-    tags: [], tag: ''
+    tags: [], tag: '',
+    review: { week: { count: 0, top: '', days: 0 }, month: { count: 0, top: '', days: 0 } }
   },
 
   onLoad(options) {
     const nav = navInfo();
-    const type = TYPES[options && options.type] ? options.type : 'worry';
+    let type = TYPES[options && options.type] ? options.type : 'worry';
+    // 从今夜 tab 的图例切过来时，switchTab 不能带 query，走 globalData
+    const fromHome = getApp().globalData.starsType;
+    if (fromHome && TYPES[fromHome]) {
+      type = fromHome;
+      getApp().globalData.starsType = '';
+    }
     this.setData({
       navTop: nav.navTop, capTop: nav.capTop, capH: nav.capH,
       type, meta: TYPES[type]
     });
   },
 
-  onShow() { this.build(); },
+  onShow() {
+    // 同步自定义 tabBar 选中态
+    if (typeof this.getTabBar === 'function') {
+      const tb = this.getTabBar();
+      if (tb) tb.setData({ selected: 1 });
+    }
+    this.build();
+    // 列表页不会触发 App.onShow：自己拉一次回音，拿到后立刻重建，
+    // 避免「明明收到回音，有回音列表却还是 0 颗」。
+    const app = getApp();
+    if (app && app.checkReplies) {
+      app.checkReplies().then(() => { if (!this._unloaded) this.build(); });
+    }
+  },
+  onUnload() { this._unloaded = true; },
 
   build() {
     const list = store.load();
+    const d = new Date();
+    const review = {
+      week: statRange(list, Date.now() - 7 * 86400e3),
+      month: statRange(list, new Date(d.getFullYear(), d.getMonth(), 1).getTime())
+    };
     // 编号与星空页一致：按写下时间排序，最早的星是 01 号
     const seq = {};
     [...list].sort((a, b) => a.id - b.id).forEach((r, i) => { seq[r.id] = String(i + 1).padStart(2, '0'); });
     const pick = {
       all: () => true,
       worry: r => !r.done && !r.reply,
-      replied: r => !r.done && !!r.reply,
+      // 翻过篇的星收到回音也要能找到：不再因为 done 把有回音的星过滤掉
+      replied: r => !!r.reply,
       gold: r => !!r.done
     }[this.data.type];
     const all = list.filter(pick).sort((a, b) => b.id - a.id).map(r => {
@@ -69,6 +118,7 @@ Page({
         idx: seq[r.id],
         text: r.text,
         tag: r.tag || '',
+        mood: skyUtil.moodText(r),
         cls: r.done ? 'gold' : (r.reply ? 'replied' : 'worry'),
         meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : ''),
         reply: r.reply || '',
@@ -81,7 +131,7 @@ Page({
     const tags = [];
     all.forEach(it => { if (it.tag && tags.indexOf(it.tag) < 0) tags.push(it.tag); });
     this._allRaw = all;
-    this.setData({ tags });
+    this.setData({ tags, review });
     this.applyFilter();
   },
 
@@ -100,6 +150,14 @@ Page({
       count: filtered.length,
       hasMore: filtered.length > PAGE
     });
+  },
+
+  // 顶部类型页签：星空 tab 内直接切换，不必回今夜 tab
+  pickType(e) {
+    const v = e.currentTarget.dataset.v;
+    if (!TYPES[v] || v === this.data.type) return;
+    this.setData({ type: v, meta: TYPES[v], tag: '' });
+    this.build();
   },
 
   pickTag(e) {
@@ -125,13 +183,13 @@ Page({
     wx.navigateTo({ url: `/pages/star/star?id=${id}` });
   },
 
-  // 熄灭（删除）：本地删掉，星空页 onShow 重建时自动联动
+  // 删除：本地删掉，星空页 onShow 重建时自动联动
   delStar(e) {
     const id = e.currentTarget.dataset.id;
     wx.showModal({
-      title: '让这颗星熄灭？',
-      content: '熄灭之后，就找不回来了。',
-      confirmText: '熄灭',
+      title: '删除这颗星？',
+      content: '删除之后，就找不回来了。',
+      confirmText: '删除',
       cancelText: '再留留',
       confirmColor: '#a87f7f',
       success: r => {

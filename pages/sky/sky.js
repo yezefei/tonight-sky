@@ -6,18 +6,46 @@ const config = require('../../utils/config');
 
 const REVISIT_DAYS = 30; // 星回触发天数；调试可在 onLoad options 里传 ?revisit=0
 
+// 时段问候：别在白天也硬说「夜深了」。除了问候，首屏两句也跟着换，避免白天出现「睡不着」。
+function sceneForHour(h) {
+  if (h >= 23 || h < 2) return {
+    greet: '夜 很 深 了', hero1: '睡不着，', hero2: '也没关系。',
+    lead1: '今晚心里装着的事，', lead2: '说完，就把它变成星星，放在天上。'
+  };
+  if (h >= 2 && h < 5) return {
+    greet: '这 么 晚 还 醒 着', hero1: '睡不着，', hero2: '也没关系。',
+    lead1: '今晚心里装着的事，', lead2: '说完，就把它变成星星，放在天上。'
+  };
+  if (h >= 5 && h < 9) return {
+    greet: '天 亮 了', hero1: '醒 来 了，', hero2: '慢 慢 来。',
+    lead1: '心里装着的事，', lead2: '说出来，就先放在这里。'
+  };
+  if (h >= 9 && h < 18) return {
+    greet: '白 天 也 能 慢 下 来', hero1: '心 里 有 事，', hero2: '也 没 关 系。',
+    lead1: '心里装着的事，', lead2: '说出来，就先放在这里。'
+  };
+  return {
+    greet: '天 黑 了', hero1: '睡不着，', hero2: '也没关系。',
+    lead1: '今晚心里装着的事，', lead2: '说完，就把它变成星星，放在天上。'
+  };
+}
+
 Page({
   data: {
-    bgStars: [], stars: [],
+    // 星空由 components/skyfield 独立绘制，不承载任何用户记录
     navTop: 88, capTop: 26, capH: 32,
     orbitOn: false, orbits: [],
-    greet: '夜 深 了',
+    greet: '白 天 也 能 慢 下 来', hero1: '心 里 有 事，', hero2: '也 没 关 系。',
+    lead1: '心里装着的事，', lead2: '说出来，就先放在这里。',
     count: 0, doneCount: 0,
-    banner: '', justReleased: false,
+    banner: '', justReleased: false, soothe: '', sleepFade: false,
     sheetOn: false, sheet: { meta: '', text: '', done: false, reply: '', sent: false },
     shareOn: false, sending: false, turnFlash: false,
     rvOn: false, rv: { meta: '', text: '', more: [] },
     rvWrite: false, rvText: '',
+    rvNowOptions: skyUtil.NOW_OPTIONS, rvThen: '', rvNow: '', rvNowLabel: '',
+    // 订阅模板没配好时不能让用户误以为「等回音」会被自动通知
+    notifyReady: !!(config.TMPL_OPENED || config.TMPL_REPLY),
     toast: '', toastUndo: null
   },
   revisitDays: REVISIT_DAYS,
@@ -26,24 +54,20 @@ Page({
   onLoad(options) {
     if (options && options.revisit !== undefined) this.revisitDays = Number(options.revisit) || 0;
     const nav = navInfo();
-    const h = new Date().getHours();
-    this.setData({
-      navTop: nav.navTop, capTop: nav.capTop, capH: nav.capH,
-      greet: (h >= 2 && h < 5) ? '这 么 晚 还 醒 着' : (h >= 23 || h < 2) ? '夜 很 深 了' : '夜 深 了'
-    });
-    const bgStars = [];
-    for (let i = 0; i < 46; i++) {
-      bgStars.push({
-        x: Math.random() * 100, y: Math.random() * 64,
-        d: (Math.random() * 8).toFixed(1),
-        s: (Math.random() * 2.4 + 1).toFixed(1),   // 星点大小 1~3.4 px
-        o: (Math.random() * .45 + .12).toFixed(2)  // 亮度
-      });
-    }
-    this.setData({ bgStars });
+    this.setData({ navTop: nav.navTop, capTop: nav.capTop, capH: nav.capH, ...sceneForHour(new Date().getHours()) });
   },
 
   onShow() {
+    // 切回页面时按当前时间再算一次问候（可能从白天跨到晚上）
+    this.setData(sceneForHour(new Date().getHours()));
+    // 回到今夜 tab：恢复装饰星空动画
+    const sf = this.selectComponent('#skyfield');
+    if (sf) sf.resume();
+    // 同步自定义 tabBar 选中态（tab 页切回来只触发 onShow）
+    if (typeof this.getTabBar === 'function') {
+      const tb = this.getTabBar();
+      if (tb) tb.setData({ selected: 0 });
+    }
     this.buildSky();
     // 云同步完成后刷新夜空
     const app = getApp();
@@ -55,11 +79,18 @@ Page({
       g.openStarId = null;
       setTimeout(() => this.openFromMeteor(id), 400);
     }
-    // 放它走之后回到夜空：自动进入轨道视图，看着新星加入环绕（每次释放只自动一次）
-    if (g.justReleased && !g.autoOrbitShown) {
+    // 从仪式页 switchTab 回今夜 tab：直接展开轨道，不先闪首页
+    if (g.openOrbitFromTab || (g.justReleased && !g.autoOrbitShown)) {
+      g.openOrbitFromTab = false;
       g.autoOrbitShown = true;
-      setTimeout(() => this.setData({ orbitOn: true }), 900);
+      this.setData({ orbitOn: true });
     }
+  },
+
+  onHide() {
+    // 切走 tab / 进二级页时停帧，省电
+    const sf = this.selectComponent('#skyfield');
+    if (sf) sf.pause();
   },
 
   onUnload() {
@@ -72,28 +103,26 @@ Page({
     const list = store.load();
     const beckon = skyUtil.findRevisit(list, g.freshId, this.revisitDays);
     this.beckonId = beckon ? beckon.id : null;
-    const stars = list.map(r => ({
-      id: r.id,
-      x: r.x, y: r.y,
-      size: 4 + (r.text.length % 5),
-      delay: r.id % 7,
-      cls: (r.id === g.freshId ? 'fresh' : '')
-        + (r.id === g.turningId ? ' turning' : '')
-        + (r.id === this.beckonId ? ' beckon' : '')
-        + (r.done ? ' gold' : (r.reply ? ' replied' : ''))
-    }));
     let banner = '';
     if (beckon) {
       const days = Math.max(1, Math.floor((Date.now() - (beckon.snoozed || beckon.t || beckon.id)) / 86400e3));
-      banner = `一颗 ${days} 天前的星，在等你回头看看 ✦`;
+      banner = `${days} 天前你写下的那句话，想再看看吗？✦`;
     }
     const now = new Date();
     const week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()];
+    const fresh = g.freshId != null ? list.find(x => x.id === g.freshId) : null;
+    const released = !!g.justReleased;
+    // 收尾状态换成简短标题，别再堆两行统计；常态才用时段问候
+    const scene = released
+      ? { hero1: '今 晚，', hero2: '先 到 这 里。', lead1: '', lead2: '' }
+      : sceneForHour(now.getHours());
     this.setData({
-      stars, banner,
+      ...scene,
+      banner,
       count: list.length,
       doneCount: list.filter(r => r.done).length,
-      justReleased: !!g.justReleased,
+      justReleased: released,
+      soothe: released ? skyUtil.sootheFor(fresh) : '',
       dateLabel: `${now.getMonth() + 1}月${now.getDate()}日 · ${week}`,
       orbits: this.buildOrbits(list, g.freshId, g.turningId)
     });
@@ -121,6 +150,7 @@ Page({
           y: (50 + 47 * Math.sin(a)).toFixed(2),
           idx: seq[r.id],
           size: Math.round((8 + (r.text.length % 5)) * (r.done ? 1.7 : 1)),
+          beckon: r.id === this.beckonId,
           cls: (r.id === freshId ? 'fresh ' : '')
              + (r.id === turningId ? 'turning ' : '')
              + (r.done ? 'gold' : (r.reply ? 'replied' : ''))
@@ -139,28 +169,53 @@ Page({
 
   goWrite() { wx.navigateTo({ url: '/pages/write/write' }); },
   goCalm() { wx.navigateTo({ url: '/pages/calm/calm' }); },
-  goSettings() { wx.navigateTo({ url: '/pages/settings/settings' }); },
-  // 底部图例：进入对应类型的星志列表页
+  goSleepless() { wx.navigateTo({ url: '/pages/sleepless/sleepless' }); },
+  goSettings() { wx.switchTab({ url: '/pages/settings/settings' }); },
+  // 星空 tab 用 globalData 传筛选类型（switchTab 不能带 query）
   goList(e) {
     const type = e.currentTarget.dataset.type || 'worry';
-    wx.navigateTo({ url: `/pages/stars/stars?type=${type}` });
+    getApp().globalData.starsType = type;
+    wx.switchTab({ url: '/pages/stars/stars' });
   },
-  dismissRelease() {
+  // 明确的返程出口：清掉一次性状态，回到常态首页（不渐暗）
+  backToSky() {
     const g = getApp().globalData;
     g.justReleased = false;
     g.freshId = null;
     g.autoOrbitShown = false;
-    this.setData({ justReleased: false });
+    g.openOrbitFromTab = false;
+    this.setData({ justReleased: false, orbitOn: false, soothe: '', sleepFade: false });
     this.buildSky();
   },
+  // 点底部「今夜」tab 时也算一次返程，避免被困在收尾面板
+  onTabItemTap(item) {
+    if (item && item.index === 0 && this.data.justReleased) this.backToSky();
+  },
+  dismissRelease() {
+    // 轨道页的「晚安」：回常态后再盖渐暗层，慢慢把夜空交出去
+    this.backToSky();
+    this.setData({ sleepFade: true });
+  },
+  // 渐暗层：轻触任意处唤醒，不强制跳转
+  wake() { this.setData({ sleepFade: false }); },
 
-  // 放它走之后：把今晚存成卡片
+  // 交给夜空之后：把今晚存成卡片
   makeCard() {
     const g = getApp().globalData;
     const r = store.load().find(x => x.id === g.freshId);
     if (!r) return;
     g.card = { text: r.text, tag: r.tag, t: r.t || r.id };
     wx.navigateTo({ url: '/pages/card/card' });
+  },
+
+  // 交给夜空后直接送刚写下的那颗，不用再点星进详情找入口
+  sendFreshStar() {
+    const g = getApp().globalData;
+    const r = store.load().find(x => x.id === g.freshId);
+    if (!r) return this.showToast('刚才那颗星没找到，去星空里选一颗吧');
+    this.sheetStar = r;
+    this.setData({ sheetOn: false });
+    this.sendStar();
   },
 
   // 星星详情：这颗星存成卡片
@@ -207,10 +262,11 @@ Page({
     if (!r) return;
     this.sheetId = id;
     this.sheetStar = r;
+    const waitText = this.data.notifyReady ? ' · 已送出，等一颗回音' : ' · 已送出，记得回来看看';
     this.setData({
       sheetOn: true,
       sheet: {
-        meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : '') + (r.reply ? ' · 收到回复' : (r.sent ? (r.opened ? ' · 对方已打开，回音在路上' : ' · 已送出，等一颗回音') : '')),
+        meta: store.fmt(r.t || r.id) + (r.tag ? ' · ' + r.tag : '') + (r.reply ? ' · 收到回复' : (r.sent ? (r.opened ? ' · 对方已打开，回音在路上' : waitText) : '')),
         text: r.text, done: !!r.done, demo: false,
         reply: r.reply || '', sent: !!r.sent,
         acked: !!r.ack
@@ -299,7 +355,12 @@ Page({
           const list = store.load();
           const i = list.findIndex(x => x.id === r.id);
           if (i > -1) { list[i].reply = res.replyText; store.save(list, () => {}); }
-          this.setData({ 'sheet.reply': res.replyText, 'sheet.meta': this.data.sheet.meta.replace(' · 已送出，等一颗回音', ' · 收到回复') });
+          this.setData({
+            'sheet.reply': res.replyText,
+            'sheet.meta': this.data.sheet.meta
+              .replace(' · 已送出，等一颗回音', ' · 收到回复')
+              .replace(' · 已送出，记得回来看看', ' · 收到回复')
+          });
         } else {
           this.showToast(res.mine && res.status === 'waiting' ? '还没有送到 TA 手里' : 'TA 打开了，还没回');
         }
@@ -313,7 +374,7 @@ Page({
       const id = this.pendingShare;
       this.pendingShare = null;
       this.setData({ shareOn: false });
-      return { title: '给你一颗今晚的星 ✦', path: `/pages/receive/receive?id=${id}` };
+      return { title: '给你一颗今晚的星 · 只留给第一个打开的人', path: `/pages/receive/receive?id=${id}` };
     }
     return { title: '今晚心里的事，说出来就变轻了', path: '/pages/sky/sky' };
   },
@@ -321,9 +382,9 @@ Page({
   delStar() {
     // 不可逆操作，确认一次
     wx.showModal({
-      title: '让这颗星熄灭？',
-      content: '熄灭之后，就找不回来了。',
-      confirmText: '熄灭',
+      title: '删除这颗星？',
+      content: '删除之后，就找不回来了。',
+      confirmText: '删除',
       cancelText: '再留留',
       confirmColor: '#a87f7f',
       success: r => {
@@ -372,6 +433,8 @@ Page({
     const days = Math.max(1, Math.floor((Date.now() - (r.snoozed || r.t || r.id)) / 86400e3));
     this.setData({
       rvOn: true, rvWrite: false, rvText: '',
+      rvThen: skyUtil.moodText(r) || '那时没打分',
+      rvNow: r.rvNow || '', rvNowLabel: skyUtil.nowLabel(r.rvNow),
       rv: {
         meta: `${store.fmt(r.t || r.id)}${r.tag ? ' · ' + r.tag : ''} · ${days} 天前`,
         text: r.text,
@@ -379,6 +442,17 @@ Page({
       }
     });
   },
+  // 星回：记下「现在怎么样了」。这是更敏感的本地字段，不会随云同步上传
+  pickRvNow(e) {
+    const v = e.currentTarget.dataset.v;
+    const list = store.load();
+    const i = list.findIndex(x => x.id === this.rvId);
+    if (i < 0) return;
+    list[i].rvNow = v;
+    store.save(list, () => {});
+    this.setData({ rvNow: v, rvNowLabel: skyUtil.nowLabel(v) });
+  },
+
   rvTurn() { this.doTurn(this.rvId); },
   rvWait() {
     const list = store.load();

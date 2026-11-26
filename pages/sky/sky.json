@@ -2,6 +2,8 @@
   "navigationStyle": "custom",
   "disableScroll": true,
   "usingComponents": {
-    "meteor": "/components/meteor/meteor"
+    "skyfield": "/components/skyfield/skyfield",
+    "meteor": "/components/meteor/meteor",
+    "sleepfade": "/components/sleepfade/sleepfade"
   }
 }

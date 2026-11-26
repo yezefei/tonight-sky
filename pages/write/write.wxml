@@ -1,28 +1,45 @@
 <view class="page" style="padding-top:{{navTop}}px">
-  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹<text class="back-txt">返回</text></view>
   <view class="h2">今晚，慢慢说</view>
-  <view class="sub">现在，最让你放不下的是什么？</view>
-  <view class="tiny">不用组织语言。哪怕只有一句，也可以。</view>
+  <view class="sub">现在，心里最想说的是什么？</view>
 
   <view class="write-box">
     <textarea class="worry" placeholder="想到什么就写什么，几个词也行" placeholder-class="ph"
       value="{{text}}" bindinput="onInput" maxlength="2000" auto-height focus="{{focus}}"></textarea>
   </view>
-  <view wx:if="{{draftRestored}}" class="draft-hint">上次没写完的，还留着 · <text class="draft-clear" bindtap="clearDraft">清空重写</text></view>
+  <view class="count-hint {{text.length >= 1800 ? 'near' : ''}}">{{text.length}} / 2000</view>
+  <view wx:if="{{draftRestored}}" class="draft-hint">上次没写完的，还留着 · <text class="draft-clear" hover-class="tap" bindtap="clearDraft">清空重写</text></view>
+  <view class="starter-pill" hover-class="tap" bindtap="useStarter">不知道从何说起？借一句话开头 →</view>
   <view wx:if="{{hasVoice}}" class="voice-row">
     <view class="voice-btn {{voiceOn ? 'on' : ''}}" hover-class="tap" bindtap="toggleVoice">
       <view class="mic"></view>
       <text>{{voiceOn ? '正在听 · 说完轻触结束' : '轻 触 说 话'}}</text>
     </view>
     <view wx:if="{{voiceLive}}" class="voice-live">{{voiceLive}}</view>
+    <view wx:if="{{voiceErr}}" class="voice-err">{{voiceErr}}</view>
   </view>
-  <view style="margin-top:20rpx"><text class="starter-link" bindtap="useStarter">不知道从何说起？借一句话开头</text></view>
+  <view class="optional-toggle" hover-class="tap" bindtap="toggleOptional">
+    {{showTags ? '收 起 标 记 ↑' : '想标记一下此刻吗？都可以不选 ↓'}}
+  </view>
+  <block wx:if="{{showTags}}">
+    <view class="tiny mood-label">大方向</view>
+    <view class="chips">
+      <view wx:for="{{chips}}" wx:key="*this" hover-class="tap"
+        class="chip {{tag === item ? 'sel' : ''}}" bindtap="pickChip" data-v="{{item}}">{{item}}</view>
+    </view>
 
-  <view class="tiny" style="margin-top:40rpx">想选个大方向也行，不选也没关系</view>
-  <view class="chips">
-    <view wx:for="{{chips}}" wx:key="*this" hover-class="tap"
-      class="chip {{tag === item ? 'sel' : ''}}" bindtap="pickChip" data-v="{{item}}">{{item}}</view>
-  </view>
+    <view class="tiny mood-label">这份感觉有多强烈？</view>
+    <view class="chips">
+      <view wx:for="{{intensities}}" wx:key="key" hover-class="tap"
+        class="chip {{intensity === item.key ? 'sel' : ''}}" bindtap="pickIntensity" data-v="{{item.key}}">{{item.label}}</view>
+    </view>
+
+    <view class="tiny mood-label">此刻的心情</view>
+    <view class="chips">
+      <view wx:for="{{emotions}}" wx:key="*this" hover-class="tap"
+        class="chip {{emotion === item ? 'sel' : ''}}" bindtap="pickEmotion" data-v="{{item}}">{{item}}</view>
+    </view>
+  </block>
 
   <view class="spacer"></view>
   <view class="btn-main {{canDone ? '' : 'dis'}}" hover-class="btn-hover" bindtap="done">说 完 了</view>

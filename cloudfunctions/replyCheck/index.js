@@ -18,10 +18,12 @@ exports.main = async () => {
       .where({ from: OPENID, expireAt: _.lt(Date.now()) })
       .limit(20).remove().catch(() => {});
 
+    // 不再只取「未读」：用户可能已读过但本地记录被清掉，仍要能把回音补回来。
+    // 已读控制交给客户端的 tonight-reply-announced 去重，不会重复弹流星。
     const res = await db.collection('shares')
-      .where({ from: OPENID, status: 'replied', replySeen: _.neq(true) })
+      .where({ from: OPENID, status: 'replied' })
       .orderBy('repliedAt', 'desc')
-      .limit(10)
+      .limit(20)
       .get()
       .catch(() => null);
 

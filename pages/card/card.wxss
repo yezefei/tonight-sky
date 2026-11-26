@@ -1,11 +1,11 @@
-.style-sub { text-align: center; margin-top: 14rpx; color: #525771; font-size: 20rpx; letter-spacing: .3em; text-indent: .3em; }
+.style-sub { text-align: center; margin-top: 14rpx; color: #7c84a6; font-size: 20rpx; letter-spacing: .3em; text-indent: .3em; }
 
 /* 卡面滑动 */
 .card-swiper { height: 760rpx; margin-top: 24rpx; }
 .card-wrap { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; }
 .card-img { width: 440rpx; height: 704rpx; border-radius: 22rpx; box-shadow: 0 24rpx 90rpx rgba(0,0,0,.55); transition: transform .3s ease, opacity .3s ease; }
 .card-img.side { transform: scale(.88); opacity: .55; }
-.card-loading { color: #525771; font-size: 26rpx; letter-spacing: .1em; }
+.card-loading { color: #7c84a6; font-size: 26rpx; letter-spacing: .1em; }
 
 /* 会员卡角标 */
 .lock-badge {

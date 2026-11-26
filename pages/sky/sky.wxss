@@ -1,51 +1,43 @@
-.sky-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; }
-.bg-star { position: absolute; width: 4rpx; height: 4rpx; border-radius: 50%; background: #cdd3ee; opacity: .22; animation: tw 7s ease-in-out infinite; }
-.sky-star {
-  position: absolute; border-radius: 50%; pointer-events: auto;
-  background: #fff6e3;
-  box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 22px 6px rgba(255,246,227,.18);
-  animation: tw 5s ease-in-out infinite;
-}
+/* 首页星空已交给 components/skyfield 的 canvas 动画；这里只保留轨道视图仍要用的关键帧 */
 @keyframes tw { 50% { opacity: .45; } }
-.sky-star.fresh { animation: born 2.6s ease-out forwards; z-index: 5; }
 @keyframes born {
   0% { box-shadow: 0 0 0 0 rgba(255,246,227,.9); opacity: 0; transform: scale(.2); }
   25% { opacity: 1; transform: scale(1.9); box-shadow: 0 0 30px 10px rgba(255,246,227,.8), 0 0 90px 40px rgba(185,195,255,.35); }
   60% { transform: scale(1); }
   100% { box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 22px 6px rgba(255,246,227,.18); }
 }
-.sky-star.turning { animation: turnGold 2.2s ease-out forwards; z-index: 5; }
 @keyframes turnGold {
   0% { transform: scale(1); }
   30% { transform: scale(2.1); background: #FFCE8A; box-shadow: 0 0 26px 10px rgba(255,206,138,.95), 0 0 80px 30px rgba(255,206,138,.45); }
   100% { transform: scale(1); background: #FFCE8A; box-shadow: 0 0 12px 4px rgba(255,206,138,.95), 0 0 34px 12px rgba(255,206,138,.42); }
 }
-.sky-star.beckon { animation: beckon 4.5s ease-in-out infinite; }
 @keyframes beckon {
   0%, 100% { box-shadow: 0 0 8px 2px rgba(255,246,227,.55), 0 0 30px 8px rgba(255,215,154,.10); }
   50% { box-shadow: 0 0 8px 2px rgba(255,246,227,.7), 0 0 52px 16px rgba(255,215,154,.30); }
 }
 
-/* 轨道页入口：「已经有 N 颗星星」那句话本身是可点的 */
-.sub-link .link-em { border-bottom: 1rpx dotted rgba(255,215,154,.45); padding-bottom: 3rpx; }
+/* 首页星数 → 恒星轨道：整句可点，翻篇数用金色星标和轨道里的金星呼应 */
+.sub-link { color: #b9c3ff; }
+.sub-link .link-em { color: #ffd79a; border-bottom: none; padding-bottom: 0; }
+.sub-done { margin-top: 8rpx; }
+.sub-done .done-em { color: #ffce8a; letter-spacing: .06em; }
+.link-arrow { margin-left: 10rpx; color: #7c84a6; font-size: 24rpx; }
 
 @keyframes sunPulse {
   0%, 100% { box-shadow: 0 0 24rpx 8rpx rgba(255,215,154,.5), 0 0 90rpx 30rpx rgba(255,215,154,.18); }
   50% { box-shadow: 0 0 30rpx 12rpx rgba(255,215,154,.62), 0 0 120rpx 44rpx rgba(255,215,154,.26); }
 }
 
-/* 首屏星点纯装饰 */
-.sky-star.deco { pointer-events: none; }
-
 /* 恒星轨道视图：深空观测台（OLED 深黑 + 仪器风） */
 .orbit-view {
-  position: fixed; inset: 0; z-index: 60;
+  /* 全屏轨道必须高于自定义 tabBar(800)，否则底部收尾按钮会被导航压住 */
+  position: fixed; inset: 0; z-index: 850;
   background: radial-gradient(120% 70% at 50% 34%, #0B1128 0%, #060913 46%, #030409 100%);
   opacity: 0; pointer-events: none; transition: opacity .45s ease;
 }
 .orbit-view.on { opacity: 1; pointer-events: auto; }
 .orbit-back {
-  color: #C9D2F2; border: 1rpx solid rgba(232,236,255,.22); border-radius: 50%;
+  color: #C9D2F2; border: 1rpx solid rgba(232,236,255,.22); border-radius: 999rpx;
   display: flex; align-items: center; justify-content: center;
 }
 /* 顶部标题组 */
@@ -104,6 +96,11 @@
   position: absolute; left: 48rpx; top: 50%; transform: translateY(-50%);
   font-family: monospace; font-size: 16rpx; letter-spacing: .14em; color: #596183;
 }
+/* 可回看的星：角标提示「轻触看看那晚写了什么」 */
+.orbit-beckon-tag {
+  position: absolute; left: 50%; top: -26rpx; transform: translateX(-50%);
+  font-size: 17rpx; letter-spacing: .12em; color: #ffd79a; white-space: nowrap;
+}
 /* 形状区分三种星：心事 = 暖白圆点；有回音 = 蓝色圆点带外环；已翻篇 = 金色四角星 */
 .orbit-star {
   position: relative; border-radius: 50%; background: #F4F1E6;
@@ -115,27 +112,27 @@
   content: ''; position: absolute; left: -8rpx; top: -8rpx; right: -8rpx; bottom: -8rpx;
   border-radius: 50%; border: 1.5rpx solid rgba(178,192,255,.85);
 }
-.sky-star.replied { background: #A9BCFF; box-shadow: 0 0 9px 2px rgba(160,178,255,.85), 0 0 26px 8px rgba(160,178,255,.3); }
 /* 已翻篇：金色四角星芒 */
 .orbit-star.gold { background: #FFCE8A; border-radius: 0; clip-path: polygon(50% 0%,63% 37%,100% 50%,63% 63%,50% 100%,37% 63%,0% 50%,37% 37%); box-shadow: 0 0 11px 3px rgba(255,206,138,.95), 0 0 30px 10px rgba(255,206,138,.4); }
-.sky-star.gold { background: #FFCE8A; border-radius: 0; clip-path: polygon(50% 0%,63% 37%,100% 50%,63% 63%,50% 100%,37% 63%,0% 50%,37% 37%); box-shadow: 0 0 10px 3px rgba(255,206,138,.9), 0 0 26px 8px rgba(255,206,138,.35); }
 .orbit-star.fresh { animation: born 2.6s ease-out forwards; z-index: 5; }
 .orbit-star.turning { animation: turnGold 2.2s ease-out forwards; z-index: 5; }
 .orbit-star.beckon { animation: beckon 4.5s ease-in-out infinite; }
 
-/* 底部：宋体大数字计数 + 发丝分割线 + 图例 + 提示 */
-.orbit-count { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 280rpx); text-align: center; }
+/* 底部：宋体大数字计数 + 发丝分割线 + 图例 + 提示
+   悬浮胶囊顶部 = 安全区 + 52rpx + 108rpx；整组上移到胶囊上方并留 50rpx 以上空隙 */
+.orbit-count { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 392rpx); text-align: center; }
 .orbit-count-num { font-family: 'Songti SC', 'Noto Serif CJK SC', serif; font-size: 88rpx; font-weight: 700; color: #F2EDD9; line-height: 1.1; }
 .orbit-count-lbl { margin-top: 4rpx; font-size: 24rpx; letter-spacing: .34em; text-indent: .34em; color: #7C84A6; }
 .orbit-hairline {
-  position: absolute; left: 116rpx; right: 116rpx; bottom: calc(env(safe-area-inset-bottom) + 240rpx); height: 1rpx;
+  position: absolute; left: 116rpx; right: 116rpx; bottom: calc(env(safe-area-inset-bottom) + 352rpx); height: 1rpx;
   background: linear-gradient(90deg, transparent, rgba(200,210,255,.14), transparent);
 }
 .orbit-legend {
-  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 172rpx);
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 284rpx);
   display: flex; justify-content: center;
 }
-.orbit-legend .lg { display: flex; align-items: center; margin: 0 26rpx; padding: 16rpx 6rpx; color: #6E7694; font-size: 20rpx; letter-spacing: .18em; }
+.orbit-legend .lg { display: flex; align-items: center; margin: 0 26rpx; padding: 16rpx 6rpx; color: #8b90a8; font-size: 20rpx; letter-spacing: .14em; }
+.lg-arrow { margin-left: 8rpx; color: #b9c3ff; font-size: 20rpx; }
 .lg-tap { opacity: .5; }
 .lg-dot { width: 12rpx; height: 12rpx; border-radius: 50%; background: #F4F1E6; margin-right: 12rpx; box-shadow: 0 0 6px 2px rgba(244,241,230,.5); }
 .lg-dot.gold { background: #FFCE8A; border-radius: 0; clip-path: polygon(50% 0%,63% 37%,100% 50%,63% 63%,50% 100%,37% 63%,0% 50%,37% 37%); width: 16rpx; height: 16rpx; box-shadow: 0 0 6px 2px rgba(255,206,138,.7); }
@@ -144,13 +141,14 @@
 
 /* 翻篇仪式：全屏金光一闪 */
 .gold-flash {
-  position: fixed; inset: 0; z-index: 80; pointer-events: none; opacity: 0;
+  /* 在轨道之上、遮罩/浮层之下 */
+  position: fixed; inset: 0; z-index: 855; pointer-events: none; opacity: 0;
   background: radial-gradient(circle at 50% 44%, rgba(255,215,154,.38), rgba(255,215,154,.12) 42%, rgba(255,215,154,0) 72%);
 }
 .gold-flash.on { animation: flashGold 1.8s ease-out; }
 @keyframes flashGold { 0% { opacity: 0; } 18% { opacity: 1; } 100% { opacity: 0; } }
 .orbit-hint {
-  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 100rpx);
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 212rpx);
   text-align: center; color: #4A5168; font-size: 20rpx; letter-spacing: .3em;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -159,16 +157,115 @@
   .orbit-star.turning { animation-duration: .8s; animation-iteration-count: 1; }
 }
 
-/* 首页底部 CTA：整体上移一点，主按钮和下方安静链接拉开距离，避免误点 */
-.home-cta { margin-bottom: calc(env(safe-area-inset-bottom) + 44rpx); }
-.home-cta .link-quiet { margin-top: 34rpx; padding: 26rpx 0; }
+/* 交给夜空后的轨道页收尾：轻量三按钮，不抢星星的视觉重心 */
+.orbit-actions {
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 224rpx);
+  display: flex; justify-content: center; align-items: center; padding: 0 32rpx; box-sizing: border-box;
+}
+.oa-btn {
+  flex: 1; max-width: 216rpx; margin: 0 10rpx; padding: 20rpx 0;
+  border: 1rpx solid rgba(255,215,154,.32); border-radius: 999rpx;
+  color: #ffd79a; font-size: 24rpx; letter-spacing: .12em; text-align: center;
+}
+.oa-btn.oa-quiet { border-color: rgba(200,210,255,.18); color: #8b90a8; }
+.orbit-soothe {
+  position: absolute; left: 56rpx; right: 56rpx; bottom: calc(env(safe-area-inset-bottom) + 300rpx);
+  text-align: center; color: #ffd79a; font-size: 26rpx; line-height: 1.8; letter-spacing: .06em;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
+}
 
+/* 交给夜空后：图例和提示让位给安抚文案与收尾按钮，避免彼此挤压 */
+.orbit-view.released .orbit-legend, .orbit-view.released .orbit-hint { display: none; }
+
+/* 矮屏：轨道整体缩小上提，底部信息组收紧，但始终留在胶囊之上 */
+@media (max-height: 700px) {
+  .orbit-head { top: 150rpx; }
+  .orbit-stage { top: 41%; transform: scale(.82); }
+  .orbit-count { bottom: calc(env(safe-area-inset-bottom) + 352rpx); }
+  .orbit-count-num { font-size: 72rpx; }
+  .orbit-hairline { bottom: calc(env(safe-area-inset-bottom) + 312rpx); }
+  .orbit-legend { bottom: calc(env(safe-area-inset-bottom) + 244rpx); }
+  .orbit-legend .lg { padding: 12rpx 6rpx; }
+  .orbit-hint { bottom: calc(env(safe-area-inset-bottom) + 172rpx); }
+  .orbit-soothe { bottom: calc(env(safe-area-inset-bottom) + 260rpx); }
+  .orbit-actions { bottom: calc(env(safe-area-inset-bottom) + 184rpx); }
+  .oa-btn { padding: 16rpx 0; }
+}
+
+/* 首页底部 CTA：主操作 + 两张安静入口卡，替代原来「收起/看看」的折叠文字 */
+/* 悬浮胶囊顶部距底 = 安全区 + 52rpx(bottom) + 108rpx(高)，主页卡片再留约 48rpx 间隙 */
+.home-cta { margin-bottom: calc(env(safe-area-inset-bottom) + 208rpx); }
+.quiet-cards { display: flex; gap: 16rpx; margin-top: 28rpx; }
+.quiet-card {
+  flex: 1; min-width: 0; box-sizing: border-box;
+  padding: 22rpx 10rpx 18rpx; text-align: center;
+  border: 1rpx solid rgba(200,210,255,.14); border-radius: 24rpx;
+  background: linear-gradient(160deg, rgba(29,36,64,.5), rgba(10,13,28,.32));
+}
+.qc-ico { position: relative; width: 44rpx; height: 44rpx; margin: 0 auto 12rpx; }
+.qc-orbit {
+  position: absolute; inset: 6rpx; border-radius: 50%;
+  border: 1.5rpx solid rgba(158,215,198,.55); box-shadow: 0 0 18rpx rgba(158,215,198,.16);
+  animation: qcPulse 4s ease-in-out infinite;
+}
+.qc-dot {
+  position: absolute; left: 50%; top: 50%; width: 12rpx; height: 12rpx; margin: -6rpx 0 0 -6rpx;
+  border-radius: 50%; background: #9ed7c6; box-shadow: 0 0 12rpx rgba(158,215,198,.8);
+}
+.qc-moon {
+  position: absolute; left: 50%; top: 50%;   width: 30rpx; height: 30rpx; margin: -15rpx 0 0 -15rpx;
+  border-radius: 50%; background: #ffd79a; box-shadow: 0 0 20rpx rgba(255,215,154,.32);
+}
+.qc-moon::after {
+  content: ''; position: absolute; left: 11rpx; top: -6rpx; width: 30rpx; height: 30rpx;
+  border-radius: 50%; background: #121830;
+}
+.qc-name {
+  font-family: "Songti SC", "STSong", serif; font-size: 26rpx;
+  letter-spacing: .14em; color: #edf0ff;
+}
+.qc-desc { margin-top: 7rpx; font-size: 18rpx; letter-spacing: .04em; color: #7c84a6; }
+@keyframes qcPulse { 0%,100% { transform: scale(.88); opacity: .7; } 50% { transform: scale(1.06); opacity: 1; } }
+
+/* canvas 星空固定在最底层，首页正文整体抬到它上面 */
 .hero { margin-top: 14vh; position: relative; z-index: 2; }
+.home-cta, .after-release, .revisit-banner { position: relative; z-index: 2; }
 
-.after-release { display: none; text-align: center; margin-bottom: 20rpx; animation: rise 1.2s ease; }
+/* 交给夜空后的收尾面板：与首页主 CTA 一样，要完整避开底部悬浮胶囊 */
+.after-release { display: none; text-align: center; margin-bottom: calc(env(safe-area-inset-bottom) + 208rpx); animation: rise 1.2s ease; }
 .after-release.on { display: block; }
-.ar-txt { color: #8b90a8; font-size: 28rpx; line-height: 2; margin-bottom: 8rpx; }
+.ar-soothe {
+  margin: 0 0 18rpx; color: #ffd79a; font-size: 28rpx; line-height: 1.9;
+  letter-spacing: .06em; font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
+}
+.ar-send {
+  display: block; width: 100%; margin-top: 20rpx; padding: 24rpx 0;
+  border: 1rpx solid rgba(255,215,154,.5); border-radius: 999rpx;
+  background: rgba(255,215,154,.1);
+  color: #ffd79a; font-size: 28rpx; letter-spacing: .2em; text-indent: .2em;
+  font-family: "Songti SC", "STSong", serif;
+}
+/* 收尾页只留两个文字出口：回到夜空是主返程，再说一次是次要操作 */
+.ar-links { display: flex; justify-content: center; gap: 56rpx; margin-top: 28rpx; }
+.ar-back, .ar-again {
+  padding: 14rpx 8rpx; font-size: 26rpx; letter-spacing: .16em; text-indent: .16em;
+  font-family: "Songti SC", "STSong", serif;
+}
+.ar-back { color: #ffd79a; }
+.ar-again { color: #8b90a8; }
+/* 轨道收尾区四个按钮并排：收紧字距，避免短屏上拥挤 */
+.orbit-actions .oa-btn { padding: 18rpx 0; letter-spacing: .06em; }
 @keyframes rise { from { opacity: 0; transform: translateY(24rpx); } to { opacity: 1; transform: none; } }
+
+/* 给浮层顶部「收起」留出独立一行，避免和 meta 挤在一起 */
+.sheet { padding-top: 80rpx; }
+
+/* 星星详情浮层：右上角「收起」，首页无遮罩也能明确关掉 */
+.sheet-fold {
+  position: absolute; right: 40rpx; top: 16rpx;
+  padding: 12rpx 18rpx; font-size: 22rpx; letter-spacing: .12em;
+  color: #8b90a8;
+}
 
 .revisit-banner {
   display: block; width: 100%; margin-bottom: 24rpx; padding: 26rpx 32rpx;
@@ -179,6 +276,11 @@
 }
 
 /* 送星按钮与回音 */
+.notify-note {
+  margin-top: 20rpx; padding: 18rpx 24rpx;
+  background: rgba(255,215,154,.05); border-radius: 20rpx;
+  color: #c8a87a; font-size: 22rpx; line-height: 1.7;
+}
 .turn.send { border-color: rgba(185,195,255,.35); color: #b9c3ff; margin-top: 20rpx; }
 .reply-card { margin-top: 32rpx; border-left: 2rpx solid rgba(255,215,154,.4); padding-left: 24rpx; }
 .reply-meta { font-size: 22rpx; color: #ffd79a; letter-spacing: .2em; margin-bottom: 12rpx; }
@@ -189,17 +291,34 @@
   background: rgba(255,255,255,.04); border: 1rpx solid rgba(255,255,255,.08);
   border-radius: 24rpx; padding: 24rpx; color: #eef0f7; font-size: 30rpx; line-height: 1.9;
 }
+/* 星回：当时 vs 现在 */
+.rv-then { margin-top: 16rpx; font-size: 22rpx; letter-spacing: .1em; color: #ffd79a; }
+.rv-now-chips { display: flex; justify-content: center; flex-wrap: wrap; margin-top: 24rpx; }
+.rv-now-chip {
+  padding: 14rpx 28rpx; margin: 0 10rpx 12rpx; border-radius: 999rpx;
+  border: 1rpx solid rgba(200,210,255,.16); color: #8b90a8; font-size: 22rpx; letter-spacing: .12em;
+}
+.rv-now-chip.sel { border-color: rgba(255,215,154,.5); color: #ffd79a; background: rgba(255,215,154,.06); }
+.rv-compare {
+  margin-top: 18rpx; text-align: center; font-size: 22rpx; line-height: 1.8;
+  color: #b9c3ff; letter-spacing: .06em;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .bg-star, .sky-star { animation-duration: .01s; animation-iteration-count: 1; }
-  .sky-star.turning { animation-duration: .8s; animation-iteration-count: 1; }
+  .orbit-star { animation-duration: .01s; animation-iteration-count: 1; }
+  .orbit-star.turning { animation-duration: .8s; animation-iteration-count: 1; }
 }
 
 /* 示范星入口 + 提示 */
 .demo-link { color: #7c84a6; margin-top: 24rpx; font-size: 24rpx; letter-spacing: .14em; }
-/* 恒星环绕入口：比正文弱一级的安静链接 */
-.orbit-link { color: #7c84a6; margin-top: 32rpx; font-size: 24rpx; letter-spacing: .18em; }
-.demo-hint { text-align: center; margin-top: 32rpx; color: #525771; font-size: 22rpx; letter-spacing: .12em; line-height: 2; }
+/* 恒星环绕入口：给一点金色和虚线下划线，明确可点，但仍克制 */
+.orbit-link {
+  display: inline-block; color: rgba(255,215,154,.88); margin-top: 32rpx;
+  font-size: 25rpx; letter-spacing: .14em;
+  border-bottom: 1rpx dashed rgba(255,215,154,.45); padding-bottom: 6rpx;
+}
+.orbit-arrow { margin-left: 8rpx; font-size: 28rpx; }
+.demo-hint { text-align: center; margin-top: 32rpx; color: #7c84a6; font-size: 22rpx; letter-spacing: .12em; line-height: 2; }
 
 /* 回音回执：我收到了 */
 .ack-btn {
@@ -207,7 +326,20 @@
   border: 1rpx solid rgba(255,206,138,.4); color: #ffd79a;
   font-size: 22rpx; letter-spacing: .2em; text-indent: .2em;
 }
-.ack-done { margin-top: 20rpx; color: #6E7694; font-size: 22rpx; letter-spacing: .14em; }
+.ack-done { margin-top: 20rpx; color: #8b90a8; font-size: 22rpx; letter-spacing: .14em; }
 
 /* 可撤销的 toast 提示可点 */
 .toast.undo { border-color: rgba(255,206,138,.35); }
+
+/* 矮屏（iPhone SE / 安卓小屏）：压缩首屏呼吸空间，保证主按钮与两张卡都在首屏内 */
+@media (max-height: 700px) {
+  .hero { margin-top: 8vh; }
+  .greet { margin-bottom: 24rpx; }
+  .sub { margin-top: 16rpx; line-height: 2; }
+  .quiet-cards { margin-top: 20rpx; gap: 14rpx; }
+  .quiet-card { padding: 18rpx 8rpx 16rpx; }
+  .qc-ico { width: 40rpx; height: 40rpx; margin-bottom: 10rpx; }
+  .qc-desc { margin-top: 5rpx; font-size: 17rpx; }
+  .home-cta, .after-release { margin-bottom: calc(env(safe-area-inset-bottom) + 196rpx); }
+  .revisit-banner { padding: 18rpx 24rpx; margin-bottom: 14rpx; font-size: 24rpx; }
+}

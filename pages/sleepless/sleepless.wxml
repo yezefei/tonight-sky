@@ -1,0 +1,28 @@
+<view class="page sl-page" style="padding-top:{{navTop}}px">
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹<text class="back-txt">返回</text></view>
+
+  <!-- 慢速星野：纯装饰，不参与交互 -->
+  <view class="sl-bg">
+    <view wx:for="{{bgStars}}" wx:key="index" class="sl-bg-star"
+      style="left:{{item.x}}%;top:{{item.y}}%;width:{{item.s}}px;height:{{item.s}}px;opacity:{{item.o}};animation-delay:{{item.d}}s"></view>
+  </view>
+
+  <view class="sl-head">
+    <view class="sl-eyebrow">STILL AWAKE · STAY A WHILE</view>
+    <view class="sl-title">还 醒 着</view>
+    <view class="sl-sub">不用做点什么，躺着就好。</view>
+  </view>
+
+  <view class="sl-center">
+    <view class="sl-line {{lineOn ? 'on' : ''}}">{{line}}</view>
+    <view wx:if="{{soothe}}" class="sl-soothe">关于今晚那件事：{{soothe}}</view>
+  </view>
+
+  <view class="sl-foot">
+    <view class="sl-tip">不 用 睡 着 · 躺 着 就 已 经 是 休 息</view>
+    <view class="sl-write" hover-class="tap" bindtap="goWrite">想说点什么？</view>
+    <view class="btn-ghost sl-sleep" hover-class="tap" bindtap="sleepNow">把 手 机 放 下</view>
+  </view>
+
+  <sleepfade show="{{sleepFade}}" bind:exit="wake" />
+</view>

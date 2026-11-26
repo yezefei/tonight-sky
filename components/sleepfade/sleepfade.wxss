@@ -1,0 +1,32 @@
+.sf-mask {
+  /* 渐暗要盖住自定义 tabBar(800) 与轨道页(850) */
+  position: fixed; inset: 0; z-index: 960;
+  background: #000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  animation: sfDim 3.2s ease forwards;
+}
+@keyframes sfDim {
+  from { opacity: 0; }
+  to { opacity: .985; }
+}
+.sf-msg {
+  max-width: 560rpx; padding: 0 32rpx; text-align: center;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
+  font-size: 40rpx; line-height: 2; letter-spacing: .12em; color: #fff6e3;
+  opacity: 0; transform: translateY(16rpx);
+  animation: sfIn 1s ease 2.3s forwards;
+}
+.sf-exit {
+  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 64rpx);
+  text-align: center; font-size: 22rpx; letter-spacing: .18em; color: #8b90a8;
+  opacity: 0; transform: translateY(10rpx);
+  animation: sfIn 1s ease 3s forwards;
+}
+@keyframes sfIn {
+  from { opacity: 0; transform: translateY(14rpx); }
+  to { opacity: .82; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sf-mask { animation-duration: .6s; }
+  .sf-msg, .sf-exit { animation-delay: .5s; }
+}

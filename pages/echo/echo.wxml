@@ -1,20 +1,20 @@
-<view class="page" style="padding-top:{{navTop}}px">
+<view class="page echo" style="padding-top:{{navTop}}px">
   <view style="height:8vh"></view>
   <view class="h2">谢谢你，愿意说出来。</view>
   <view class="quote-card" id="quoteCard" style="opacity:{{cardOpacity}}">
     <view wx:if="{{tag}}" class="tag">{{tag}}</view>
-    <view class="quote-text">{{text}}</view>
+    <view class="quote-text {{longText && !expanded ? 'clamp' : ''}}">{{text}}</view>
+    <view wx:if="{{longText}}" class="quote-more" hover-class="tap" bindtap="toggleExpand">{{expanded ? '收 起 ↑' : '展 开 全 文 ↓'}}</view>
   </view>
-  <view class="sub">说出来了，今晚就到这儿。</view>
-  <view class="sub">从现在起，有颗星替你记着。</view>
-  <view class="sub">你已经说出来了——<text class="em">让它去天上待一会儿吧。</text></view>
+  <view class="sub">从现在起，<text class="em">有颗星替你记着。</text></view>
+  <view class="echo-guide">想送给朋友？等下从那颗星里送出去。</view>
 
   <!-- 释放动画的替身 -->
   <view wx:if="{{ghost.show}}" class="ghost" style="left:{{ghost.left}}px;top:{{ghost.top}}px;width:{{ghost.width}}px;transform:{{ghost.transform}};opacity:{{ghost.opacity}};filter:blur({{ghost.blur}}px)">{{text}}</view>
 
   <view class="spacer"></view>
-  <view class="btn-main {{releasing ? 'dis' : ''}}" hover-class="btn-hover" bindtap="release">托 给 夜 空</view>
-  <view class="link-quiet" hover-class="tap" bindtap="goBack">我还想再说一点</view>
+  <view class="btn-main {{releasing ? 'dis' : ''}}" hover-class="btn-hover" bindtap="release">把 它 交 给 夜 空</view>
+  <view class="btn-ghost echo-back" hover-class="tap" bindtap="goBack">我还想再说一点</view>
   <view style="height:60rpx"></view>
   <meteor />
 </view>

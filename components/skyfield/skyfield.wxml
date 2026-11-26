@@ -1,0 +1,4 @@
+<!-- 纯装饰星空：不读取任何用户记录。写下的星只出现在「恒星轨道」视图里 -->
+<view class="skyfield" aria-hidden="true">
+  <canvas type="2d" id="sky-field" class="sky-canvas" disable-scroll="{{true}}"></canvas>
+</view>

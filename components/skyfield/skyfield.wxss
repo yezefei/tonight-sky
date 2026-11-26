@@ -1,0 +1,16 @@
+/* 首页装饰星空：透明画布盖在 .page 的夜空渐变上，只画银河 / 星云 / 星点 / 流星。
+   绝不接管点击——文案、按钮和 tabBar 照常响应。 */
+.skyfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.sky-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}

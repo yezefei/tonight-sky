@@ -1,5 +1,6 @@
 // 星星详情页：从星志列表进入。查看/修改内容、翻篇、送好友、回执、存卡片、删除
 const store = require('../../utils/store');
+const skyUtil = require('../../utils/sky');
 const { navInfo } = require('../../utils/nav');
 const cloudApi = require('../../utils/cloud');
 const config = require('../../utils/config');
@@ -8,7 +9,7 @@ Page({
   data: {
     navTop: 88, capTop: 26, capH: 32,
     gone: false,
-    idx: '', meta: '', text: '', tag: '', done: false,
+    idx: '', meta: '', text: '', tag: '', mood: '', done: false,
     reply: '', sent: false, opened: false, acked: false,
     editing: false, editText: '', editTag: '', canSave: false,
     chips: ['工作', '感情', '金钱', '家庭', '未来', '说不清'],
@@ -38,7 +39,7 @@ Page({
       gone: false,
       idx: seq[r.id] || '',
       meta: store.fmt(r.t || r.id),
-      text: r.text, tag: r.tag || '', done: !!r.done,
+      text: r.text, tag: r.tag || '', mood: skyUtil.moodText(r), done: !!r.done,
       reply: r.reply || '', sent: !!r.sent, opened: !!r.opened, acked: !!r.ack,
       shareReady: !!r.shareId
     });
@@ -143,7 +144,7 @@ Page({
   },
   onShareAppMessage() {
     if (this.star && this.star.shareId) {
-      return { title: '给你一颗今晚的星 ✦', path: `/pages/receive/receive?id=${this.star.shareId}` };
+      return { title: '给你一颗今晚的星 · 只留给第一个打开的人', path: `/pages/receive/receive?id=${this.star.shareId}` };
     }
     return { title: '今晚心里的事，说出来就变轻了', path: '/pages/sky/sky' };
   },
@@ -167,9 +168,9 @@ Page({
   /* ── 删除 ── */
   del() {
     wx.showModal({
-      title: '让这颗星熄灭？',
-      content: '熄灭之后，就找不回来了。',
-      confirmText: '熄灭', cancelText: '再留留', confirmColor: '#a87f7f',
+      title: '删除这颗星？',
+      content: '删除之后，就找不回来了。',
+      confirmText: '删除', cancelText: '再留留', confirmColor: '#a87f7f',
       success: r => {
         if (!r.confirm) return;
         store.save(store.load().filter(x => x.id !== this.id), () => this.toast('这台设备存不下东西了'));

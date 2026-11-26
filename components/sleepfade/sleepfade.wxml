@@ -1,0 +1,5 @@
+<!-- 渐暗入睡仪式：点「晚安」或完成呼吸后盖上，3 秒内暗下去，轻触任意处唤醒 -->
+<view wx:if="{{show}}" class="sf-mask" bindtap="onWake" catchtouchmove="noop">
+  <view class="sf-msg">{{message}}</view>
+  <view class="sf-exit">轻触屏幕，回到夜空</view>
+</view>

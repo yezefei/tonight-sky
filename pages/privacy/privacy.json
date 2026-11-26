@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "backgroundColor": "#05060e",
+  "usingComponents": {
+    "meteor": "/components/meteor/meteor"
+  }
+}

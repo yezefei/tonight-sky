@@ -1,31 +1,32 @@
 <view class="page calm-page" style="padding-top:{{navTop}}px">
-  <view class="back calm-back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+  <view class="back calm-back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹<text class="back-txt">返回</text></view>
 
   <block wx:if="{{!finished}}">
-    <view class="calm-eyebrow">CALM · STARLIGHT ORBIT</view>
-    <view class="calm-title">跟 着 光 点 呼 吸</view>
-    <view class="calm-sub">光点走完一圈，就是一口气</view>
+    <view class="calm-eyebrow">CALM · 4-7-8 BREATHING</view>
+    <view class="calm-title">4-7-8 呼 吸 练 习</view>
+    <view class="calm-sub">一呼一吸 · 回到平静</view>
 
-    <!-- 呼吸轨道：光点 4 秒走半圈（吸），6 秒走剩下半圈（呼） -->
+    <!-- 4-7-8 节奏：圆环走完当前阶段，中央大数字倒数 -->
     <view class="calm-stage">
-      <view class="calm-path"></view>
-      <view wx:for="{{ticks}}" wx:key="index" class="calm-tick {{item.lg ? 'lg' : ''}}"
-        style="transform:rotate({{item.deg}}deg)"></view>
-      <view class="comet-spin {{spinning ? 'go' : ''}}">
-        <view class="trail t1"></view>
-        <view class="trail t2"></view>
-        <view class="trail t3"></view>
-        <view class="trail t4"></view>
-        <view class="comet"></view>
-      </view>
-      <view class="calm-center">
-        <view class="calm-phase">{{breathTxt}}</view>
-        <view class="calm-count">{{count}}</view>
+      <canvas canvas-id="breathRing" class="breath-ring" style="width:{{ringSize}}px;height:{{ringSize}}px"></canvas>
+      <view class="breath-halo {{paused ? 'paused' : ''}}"></view>
+      <view class="breath-orb {{breath}} {{paused ? 'paused' : ''}}" bindtap="togglePause"><view class="orb-shine"></view></view>
+      <view class="breath-center">
+        <view class="breath-count">{{count}}</view>
+        <view class="breath-phase">{{breathTxt}}</view>
+        <view class="breath-en">{{breathEn}}</view>
+        <view class="breath-hint">{{phaseHint}}</view>
       </view>
     </view>
 
-    <view class="calm-tempo">IN 4S · OUT 6S · ROUND {{round}} / 5</view>
-    <view class="link-quiet calm-quit" hover-class="tap" bindtap="goBack">我差不多了</view>
+    <view class="calm-controls">
+      <view class="calm-tempo">{{paused ? '已 暂 停 · 轻 触 光 球 继 续' : '4-7-8 · 鼻吸 / 屏息 / 口呼'}} · ROUND {{round}} / {{endless ? '∞' : 5}}</view>
+      <view class="calm-btn-row">
+        <view class="btn-ghost calm-half" hover-class="tap" bindtap="togglePause">{{paused ? '继 续 呼 吸' : '暂 停 一 下'}}</view>
+        <view class="btn-ghost calm-half" hover-class="tap" bindtap="toggleEndless">{{endless ? '回 到 五 轮' : '一 直 陪 着 我'}}</view>
+      </view>
+      <view class="link-quiet calm-quit" hover-class="tap" bindtap="goBack">{{endless ? '停下 · 回到夜空' : '我差不多了'}}</view>
+    </view>
   </block>
 
   <!-- 五轮之后的收尾 -->
@@ -34,7 +35,10 @@
     <view class="fin-title">今 晚 就 到 这 儿</view>
     <view class="fin-sub">呼吸慢下来了，星星替你值班。</view>
     <view class="btn-main fin-btn" hover-class="btn-hover" bindtap="goBack">回 到 夜 空</view>
-    <view class="link-quiet" hover-class="tap" bindtap="restart">再 来 五 轮</view>
+    <view class="btn-ghost calm-again" hover-class="tap" bindtap="restart">再 练 五 轮</view>
+    <view class="btn-ghost calm-again" hover-class="tap" bindtap="startEndless">一 直 陪 着 我</view>
+    <view class="link-quiet calm-stay" hover-class="tap" bindtap="goSleepless">还 睡 不 着 · 安 静 待 着</view>
   </view>
   <meteor />
+  <sleepfade show="{{sleepFade}}" bind:exit="wake" />
 </view>

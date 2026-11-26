@@ -1,5 +1,5 @@
 <view class="page-list" style="padding-top:{{navTop}}px">
-  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹<text class="back-txt">返回</text></view>
 
   <!-- 星已不在（被删过）兜底 -->
   <view wx:if="{{gone}}" class="sd-gone">
@@ -19,6 +19,7 @@
     <!-- 查看模式 -->
     <block wx:if="{{!editing}}">
       <view class="sd-text">{{text}}</view>
+      <view wx:if="{{mood}}" class="sd-mood">那时：{{mood}}</view>
 
       <view wx:if="{{reply}}" class="reply-card">
         <view class="reply-meta">回音</view>
@@ -38,7 +39,7 @@
           <view class="sd-link" hover-class="tap" bindtap="startEdit">修改内容</view>
           <view class="sd-link" hover-class="tap" bindtap="makeCard">存成卡片</view>
         </view>
-        <view class="sd-del" hover-class="tap" bindtap="del">让这颗星星熄灭（删除这条记录）</view>
+        <view class="sd-del" hover-class="tap" bindtap="del">删除这颗星</view>
       </view>
     </block>
 

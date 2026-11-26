@@ -1,6 +1,8 @@
 // 夜空数据：本地存储 + 云同步所需元数据（updatedAt / deletedAt 墓碑）
 const KEY = 'tonight-sky-v1';
 const TOMBSTONE_TTL = 30 * 86400e3;
+// 情绪强度 / 情绪词 / 星回现状：更敏感，默认只留在本机，不参与云同步
+const LOCAL_ONLY_FIELDS = ['intensity', 'emotion', 'rvNow'];
 
 function rawAll() {
   try {
@@ -36,7 +38,9 @@ function writeRaw(list, onFail) {
 // 比较时忽略同步元数据，避免无意义地刷新 updatedAt
 function fingerprint(r) {
   const o = {};
-  Object.keys(r || {}).filter(k => k !== 'updatedAt' && k !== 'deletedAt').sort()
+  const ignore = { updatedAt: true, deletedAt: true };
+  LOCAL_ONLY_FIELDS.forEach(k => { ignore[k] = true; });
+  Object.keys(r || {}).filter(k => !ignore[k]).sort()
     .forEach(k => { o[k] = r[k]; });
   return JSON.stringify(o);
 }
@@ -112,4 +116,4 @@ function fmt(t) {
   return `${d.getMonth() + 1} 月 ${d.getDate()} 日 · ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
-module.exports = { load, loadAll, save, replaceAll, purgeOld, clear, fmt };
+module.exports = { load, loadAll, save, replaceAll, purgeOld, clear, fmt, LOCAL_ONLY_FIELDS };

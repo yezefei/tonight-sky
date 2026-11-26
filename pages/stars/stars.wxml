@@ -1,5 +1,10 @@
 <view class="page-list" style="padding-top:{{navTop}}px">
-  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+  <!-- 类型页签：全部 / 心事 / 有回音 / 已翻篇 -->
+  <view class="type-tabs">
+    <view wx:for="{{types}}" wx:key="key" hover-class="tap"
+      class="type-tab {{type === item.key ? 'on' : ''}}"
+      data-v="{{item.key}}" bindtap="pickType">{{item.label}}</view>
+  </view>
 
   <!-- 页头：深空观测台 -->
   <view class="sl-head">
@@ -9,12 +14,38 @@
   </view>
   <view class="sl-hairline"></view>
 
-  <!-- 标签筛选：这一类型里出现过的标签 -->
-  <scroll-view wx:if="{{tags.length}}" scroll-x enhanced show-scrollbar="{{false}}" class="tag-scroll">
-    <view class="tag-chip {{tag === '' ? 'sel' : ''}}" hover-class="tap" bindtap="pickTag" data-v="">全部</view>
-    <view wx:for="{{tags}}" wx:key="*this" class="tag-chip {{tag === item ? 'sel' : ''}}"
-      hover-class="tap" bindtap="pickTag" data-v="{{item}}">{{item}}</view>
-  </scroll-view>
+  <!-- 近况回顾：纯本机统计，情绪强度不上传 -->
+  <view wx:if="{{review.week.count || review.month.count}}" class="review-card">
+    <view class="review-eyebrow">近 况 · 仅 本 机 统 计</view>
+    <view class="review-row">
+      <view class="review-cell">
+        <view class="review-num">{{review.week.count}}</view>
+        <view class="review-lbl">近 7 天</view>
+      </view>
+      <view class="review-cell">
+        <view class="review-num">{{review.month.count}}</view>
+        <view class="review-lbl">这 个 月</view>
+      </view>
+      <view class="review-cell">
+        <view class="review-num">{{review.week.days || '—'}}</view>
+        <view class="review-lbl">写过几天</view>
+      </view>
+    </view>
+    <view wx:if="{{review.week.top}}" class="review-note">这一周写过「{{review.week.top}}」</view>
+  </view>
+
+  <!-- 标签筛选：这一类型里出现过的标签；右侧渐隐+箭头提示还能往左滑 -->
+  <view wx:if="{{tags.length}}" class="tag-scroll-wrap">
+    <scroll-view scroll-x enhanced show-scrollbar="{{false}}" class="tag-scroll">
+      <view class="tag-chip {{tag === '' ? 'sel' : ''}}" hover-class="tap" bindtap="pickTag" data-v="">全部</view>
+      <view wx:for="{{tags}}" wx:key="*this" class="tag-chip {{tag === item ? 'sel' : ''}}"
+        hover-class="tap" bindtap="pickTag" data-v="{{item}}">{{item}}</view>
+    </scroll-view>
+    <block wx:if="{{tags.length > 3}}">
+      <view class="tag-scroll-fade"></view>
+      <view class="tag-scroll-more">→</view>
+    </block>
+  </view>
 
   <!-- 空状态 -->
   <view wx:if="{{!items.length}}" class="sl-empty">
@@ -30,10 +61,11 @@
       <view class="card-top">
         <view class="star-ic {{item.cls}}"></view>
         <view class="card-idx">NO.{{item.idx}}</view>
-        <view class="card-del" hover-class="tap" catchtap="delStar" data-id="{{item.id}}">熄 灭</view>
+        <view class="card-del" hover-class="tap" catchtap="delStar" data-id="{{item.id}}">删除</view>
       </view>
       <view class="card-txt">{{item.text}}</view>
       <view class="card-meta">{{item.meta}}</view>
+      <view wx:if="{{item.mood}}" class="card-mood">那时：{{item.mood}}</view>
 
       <view wx:if="{{item.reply}}" class="reply-card">
         <view class="reply-meta">回音</view>

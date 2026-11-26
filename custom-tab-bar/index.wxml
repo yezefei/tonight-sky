@@ -1,0 +1,13 @@
+<view class="tabbar" catchtouchmove="noop">
+  <view class="tabbar-line"></view>
+  <view wx:for="{{list}}" wx:key="key" class="tab {{selected === index ? 'on' : ''}}"
+    hover-class="tap" data-index="{{index}}" data-path="{{item.path}}" bindtap="onTap">
+    <view class="ic ic-{{item.key}}">
+      <view wx:if="{{item.key === 'night'}}" class="ic-moon"></view>
+      <view wx:elif="{{item.key === 'stars'}}" class="ic-star"></view>
+      <view wx:else class="ic-me"><view class="me-head"></view><view class="me-body"></view></view>
+    </view>
+    <view class="tab-label">{{item.label}}</view>
+  </view>
+  <view class="tabbar-fade"></view>
+</view>

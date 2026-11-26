@@ -7,7 +7,7 @@ App({
   globalData: {
     draft: { text: '', tag: '' },  // 书写页 → 回应页
     freshId: null,                  // 刚放上去的星（诞生动画）
-    justReleased: false,            // 是否刚完成「放它走」
+    justReleased: false,            // 是否刚完成「把它交给夜空」
     turningId: null,                // 翻篇仪式中的星
     card: null,                     // 晚安卡数据（pages/card 读取）
     pendingReply: [],               // 未播报的回音（星的本地 id 队列，流星组件消费）
@@ -40,9 +40,12 @@ App({
   },
 
   // 拉取好友回音：写进本地星记录，未播报过的交给流星组件
+  // 返回 Promise，星志列表页可以在拉完回音后立刻重建（否则会一直显示 0 条）
   checkReplies() {
-    if (!cloudApi.ready()) return;
-    cloudApi.call('replyCheck').then(res => {
+    if (!cloudApi.ready()) return Promise.resolve();
+    // App.onShow 和列表页 onShow 可能同时触发，合并成一次云端请求
+    if (this._replyCheckPending) return this._replyCheckPending;
+    const p = cloudApi.call('replyCheck').then(res => {
       const items = res.items || [];
       if (!items.length) return;
       const announced = new Set(wx.getStorageSync('tonight-reply-announced') || []);
@@ -68,5 +71,8 @@ App({
         if (this._meteorKick) this._meteorKick();
       }
     }).catch(() => {});
+    this._replyCheckPending = p;
+    p.then(() => { this._replyCheckPending = null; });
+    return p;
   }
 });

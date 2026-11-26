@@ -1,0 +1,77 @@
+<view class="page" style="padding-top:{{navTop}}px">
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹<text class="back-txt">返回</text></view>
+
+  <view class="eyebrow">MOOD CALENDAR</view>
+  <view class="h2">心情日历</view>
+  <view class="intro">只是回看，不打分。</view>
+
+  <view class="month-bar">
+    <view class="m-arrow" hover-class="tap" bindtap="prevMonth">‹</view>
+    <view class="m-label">{{label}}</view>
+    <view class="m-arrow {{canNext ? '' : 'off'}}" hover-class="tap" bindtap="nextMonth">›</view>
+  </view>
+
+  <view class="calendar">
+    <view class="week-row">
+      <view class="week-cell" wx:for="{{week}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view class="day-grid">
+      <view wx:for="{{days}}" wx:key="key"
+        class="day-cell {{item.blank ? 'blank' : ''}} {{item.cls}} {{selectedKey === item.key ? 'sel' : ''}}"
+        data-key="{{item.key}}" bindtap="selectDay">
+        <block wx:if="{{!item.blank}}">
+          <text class="d-num">{{item.day}}</text>
+          <view wx:if="{{item.count}}" class="d-dot"></view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view class="legend">
+    <view class="lg"><view class="lg-dot warm"></view>明亮</view>
+    <view class="lg"><view class="lg-dot cool"></view>低沉</view>
+    <view class="lg"><view class="lg-dot plain"></view>未选词</view>
+    <text class="lg-note">颜色来自你当时选的心情词</text>
+  </view>
+
+  <!-- 选中某一天：只看当天写过什么 -->
+  <view wx:if="{{selectedKey}}" class="detail-card">
+    <view class="detail-head">{{selectedLabel}} · {{selectedItems.length}} 颗星</view>
+    <view wx:for="{{selectedItems}}" wx:key="id" class="detail-item" data-id="{{item.id}}" hover-class="tap" bindtap="openStar">
+      <view class="di-top">
+        <text class="di-time">{{item.time}}</text>
+        <text wx:if="{{item.tag}}" class="di-tag">{{item.tag}}</text>
+        <text wx:if="{{item.emotion}}" class="di-mood">{{item.emotion}}{{item.intensity ? ' · ' + item.intensity : ''}}</text>
+        <text wx:if="{{item.done}}" class="di-done">已翻篇</text>
+      </view>
+      <view class="di-text">{{item.text}}</view>
+    </view>
+  </view>
+  <view wx:elif="{{monthStars > 0}}" class="hint-card">点日子，看看那天写了什么。</view>
+
+  <!-- 月度分析：只陈述数量与频次，不下结论 -->
+  <view class="analysis">
+    <view class="an-head">这个月</view>
+    <view wx:if="{{monthStars > 0}}">
+      <view class="an-lead">你写下了 <text class="an-em">{{monthDays}}</text> 个夜晚，共 <text class="an-em">{{monthStars}}</text> 颗星。</view>
+      <view wx:if="{{moodStats.length}}" class="an-block">
+        <view class="an-sub">出现过的心情</view>
+        <view wx:for="{{moodStats}}" wx:key="name" class="stat-row">
+          <text class="st-name">{{item.name}}</text>
+          <view class="st-track"><view class="st-bar" style="width:{{item.pct}}%"></view></view>
+          <text class="st-n">{{item.n}}</text>
+        </view>
+      </view>
+      <view wx:if="{{tagStats.length}}" class="an-block">
+        <view class="an-sub">写过的话题</view>
+        <view class="tag-list">
+          <text wx:for="{{tagStats}}" wx:key="name" class="tag-chip">{{item.name}} · {{item.n}}</text>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="an-empty">这个月还没有写下的夜晚。写不写，都可以。</view>
+  </view>
+
+  <view class="bottom-space"></view>
+  <meteor />
+</view>

@@ -1,5 +1,5 @@
 <view class="page" style="padding-top:{{navTop}}px">
-  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹<text class="back-txt">返回</text></view>
   <view class="h2" style="text-align:center">今晚的卡片</view>
   <view class="style-sub">左 右 滑 动 · 选 一 张 喜 欢 的</view>
 
@@ -26,8 +26,8 @@
   <!-- 离屏 canvas × 5：只负责出图，不在页面上显示 -->
   <canvas wx:for="{{styles}}" wx:key="id" canvas-id="cardCanvas{{index}}" class="offscreen" style="width:600px;height:960px"></canvas>
 
-  <view class="btn-main {{styles[cur].img && !saved ? '' : 'dis'}}" hover-class="btn-hover" bindtap="save">
-    {{saved ? '已存进相册 ✓' : (!styles[cur].free && !vip ? '存 进 相 册（会 员）' : '存 进 相 册')}}
+  <view class="btn-main {{styles[cur].img && !saved && (styles[cur].free || vip) ? '' : 'dis'}}" hover-class="btn-hover" bindtap="save">
+    {{saved ? '已存进相册 ✓' : (!styles[cur].free && !vip ? '会 员 卡 · 即 将 上 线' : '存 进 相 册')}}
   </view>
   <button class="link-quiet" open-type="share">把「今晚先睡」分享给朋友</button>
   <view style="height:40rpx"></view>

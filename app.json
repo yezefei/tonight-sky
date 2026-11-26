@@ -8,12 +8,26 @@
     "pages/calm/calm",
     "pages/stars/stars",
     "pages/star/star",
-    "pages/settings/settings"
+    "pages/settings/settings",
+    "pages/sleepless/sleepless",
+    "pages/calendar/calendar",
+    "pages/privacy/privacy"
   ],
   "window": {
     "navigationStyle": "custom",
     "backgroundColor": "#05060e",
     "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#7c84a6",
+    "selectedColor": "#ffd79a",
+    "backgroundColor": "#080a14",
+    "list": [
+      { "pagePath": "pages/sky/sky", "text": "今夜" },
+      { "pagePath": "pages/stars/stars", "text": "星空" },
+      { "pagePath": "pages/settings/settings", "text": "我的" }
+    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

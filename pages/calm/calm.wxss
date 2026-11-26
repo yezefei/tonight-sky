@@ -1,97 +1,116 @@
-/* 呼吸页 · 方案3「轨道光点」：与恒星页同一套深空观测台语言 */
+/* 呼吸页 · 4-7-8：浅色呼吸球 + 薄荷色进度环，沿用夜空底色 */
 .calm-page { height: 100vh; overflow: hidden; }
 
 .calm-back {
-  color: #C9D2F2; border: 1rpx solid rgba(232,236,255,.22); border-radius: 50%;
+  color: #C9D2F2; border: 1rpx solid rgba(232,236,255,.22); border-radius: 999rpx;
 }
 
 .calm-eyebrow {
-  position: absolute; left: 0; right: 0; top: 200rpx; text-align: center;
-  font-family: monospace; font-size: 18rpx; letter-spacing: .42em; color: #6C7699;
+  position: absolute; left: 0; right: 0; top: 196rpx; text-align: center;
+  font-family: monospace; font-size: 18rpx; letter-spacing: .38em; color: #6C7699;
 }
 .calm-title {
-  position: absolute; left: 0; right: 0; top: 252rpx; text-align: center;
+  position: absolute; left: 0; right: 0; top: 244rpx; text-align: center;
   font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
-  font-size: 40rpx; font-weight: 600; letter-spacing: .4em; text-indent: .4em; color: #EDF0FF;
+  font-size: 40rpx; font-weight: 600; letter-spacing: .3em; text-indent: .3em; color: #EDF0FF;
 }
 .calm-sub {
-  position: absolute; left: 0; right: 0; top: 332rpx; text-align: center;
-  font-size: 22rpx; letter-spacing: .26em; color: #7C84A6;
+  position: absolute; left: 0; right: 0; top: 322rpx; text-align: center;
+  font-size: 22rpx; letter-spacing: .3em; color: #8b90a8;
 }
 
-/* 轨道：直径 500rpx，24 格刻度 */
-.calm-stage { position: absolute; left: 50%; top: 47%; transform: translate(-50%, -50%); width: 500rpx; height: 500rpx; }
-.calm-path { position: absolute; inset: 0; border-radius: 50%; border: 1rpx solid rgba(200,210,255,.12); }
-.calm-tick {
-  position: absolute; left: 50%; top: 0; width: 1px; height: 17rpx;
-  background: rgba(200,210,255,.14); transform-origin: 1rpx 250rpx;
+/* 4-7-8 舞台：canvas 圆环 + 中央呼吸球 */
+.calm-stage { position: absolute; left: 50%; top: 48%; transform: translate(-50%, -50%); width: 500rpx; height: 500rpx; }
+.breath-ring { position: absolute; left: 0; top: 0; z-index: 1; }
+.breath-halo {
+  position: absolute; left: 50%; top: 50%; width: 440rpx; height: 440rpx;
+  margin-left: -220rpx; margin-top: -220rpx; border-radius: 50%;
+  background: radial-gradient(circle, rgba(143,201,184,.20) 0%, rgba(143,201,184,.07) 56%, rgba(143,201,184,0) 72%);
+  filter: blur(4rpx); z-index: 0;
 }
-.calm-tick.lg { height: 27rpx; background: rgba(200,210,255,.30); }
+.breath-orb {
+  position: absolute; left: 50%; top: 50%; width: 340rpx; height: 340rpx;
+  margin-left: -170rpx; margin-top: -170rpx; border-radius: 50%; z-index: 2;
+  background: radial-gradient(circle at 38% 30%, #FCFFFC 0%, #EAF6EF 32%, #CBE4D9 68%, #A9CFC1 100%);
+  box-shadow:
+    inset 0 0 44rpx rgba(255,255,255,.82),
+    0 0 56rpx rgba(143,201,184,.34),
+    0 0 120rpx rgba(121,184,170,.18);
+  transform: scale(.76);
+}
+/* 吸 4s 涨大 → 屏 7s 稳住 → 呼 8s 收小，与圆环和倒数严格同频 */
+.breath-orb.in { animation: orbIn 4s linear both; }
+.breath-orb.hold { animation: orbHold 7s ease-in-out both; }
+.breath-orb.out { animation: orbOut 8s linear both; }
+@keyframes orbIn {
+  from { transform: scale(.76); }
+  to { transform: scale(1.06); }
+}
+@keyframes orbHold {
+  0% { transform: scale(1.06); }
+  50% { transform: scale(1.09); }
+  100% { transform: scale(1.06); }
+}
+@keyframes orbOut {
+  from { transform: scale(1.06); }
+  to { transform: scale(.76); }
+}
+.orb-shine {
+  position: absolute; left: 14%; top: 10%; width: 58%; height: 42%;
+  border-radius: 50%; background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.8), rgba(255,255,255,0) 70%);
+  opacity: .7;
+}
 
-/* 光点 + 拖尾：整体装在一个旋转容器里，10s 一圈，前 40%（4s）走半圈是吸 */
-.comet-spin { position: absolute; inset: 0; }
-.comet-spin.go { animation: cometSpin 10s linear infinite; }
-@keyframes cometSpin {
-  0% { transform: rotate(-90deg); }
-  40% { transform: rotate(90deg); }
-  100% { transform: rotate(270deg); }
+/* 中央：大数字倒数 + 阶段 + 提示 */
+.breath-center {
+  position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+  text-align: center; z-index: 3; pointer-events: none;
 }
-.comet {
-  position: absolute; left: 50%; top: 0; transform: translate(-50%, -50%);
-  width: 23rpx; height: 23rpx; border-radius: 50%;
-  background: radial-gradient(circle at 38% 34%, #FFFDF6 0%, #FFE9BE 50%, #F2B96D 100%);
-  box-shadow: 0 0 12px 4px rgba(255,230,180,.85), 0 0 40px 14px rgba(255,214,150,.30);
-}
-/* 光点跟着呼吸缩放：吸(0→40%, 4s)缓缓收小，呼(40→100%, 6s)渐渐放大，光晕同步涨落 */
-.comet-spin.go .comet { animation: cometBreath 10s linear infinite; }
-@keyframes cometBreath {
-  0% {
-    transform: translate(-50%, -50%) scale(1.38);
-    box-shadow: 0 0 16px 6px rgba(255,230,180,.95), 0 0 56px 20px rgba(255,214,150,.38);
-    animation-timing-function: cubic-bezier(.42, 0, .72, 1);   /* 吸：先慢后快收小 */
-  }
-  40% {
-    transform: translate(-50%, -50%) scale(.62);
-    box-shadow: 0 0 8px 3px rgba(255,230,180,.6), 0 0 26px 8px rgba(255,214,150,.16);
-    animation-timing-function: cubic-bezier(.28, 0, .36, 1);   /* 呼：缓缓释放放大 */
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.38);
-    box-shadow: 0 0 16px 6px rgba(255,230,180,.95), 0 0 56px 20px rgba(255,214,150,.38);
-  }
-}
-.trail {
-  position: absolute; left: 50%; top: 0; border-radius: 50%;
-  background: #FFCE8A; box-shadow: 0 0 8px 2px rgba(255,206,138,.5);
-  transform-origin: 0 250rpx;
-}
-.trail.t1 { width: 15rpx; height: 15rpx; margin-left: -8rpx; margin-top: -8rpx; transform: rotate(-8deg); opacity: .28; }
-.trail.t2 { width: 13rpx; height: 13rpx; margin-left: -7rpx; margin-top: -7rpx; transform: rotate(-16deg); opacity: .21; }
-.trail.t3 { width: 10rpx; height: 10rpx; margin-left: -5rpx; margin-top: -5rpx; transform: rotate(-24deg); opacity: .15; }
-.trail.t4 { width: 7rpx; height: 7rpx; margin-left: -4rpx; margin-top: -4rpx; transform: rotate(-32deg); opacity: .09; }
-
-/* 圆心：阶段文字 + 等宽倒计时 */
-.calm-center { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); text-align: center; }
-.calm-phase {
+.breath-count {
   font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
-  font-size: 44rpx; font-weight: 600; letter-spacing: .5em; text-indent: .5em; color: #EDF0FF;
-  min-height: 62rpx;
+  font-size: 112rpx; line-height: 1.1; font-weight: 600; color: #2F5A50;
+  text-shadow: 0 2rpx 10rpx rgba(255,255,255,.7);
 }
-.calm-count { margin-top: 22rpx; font-family: monospace; font-size: 26rpx; letter-spacing: .3em; text-indent: .3em; color: #6C7699; min-height: 36rpx; }
+.breath-phase {
+  margin-top: 10rpx; font-family: 'Songti SC', 'Noto Serif CJK SC', serif;
+  font-size: 40rpx; font-weight: 600; letter-spacing: .4em; text-indent: .4em; color: #3E6F63;
+}
+.breath-en {
+  margin-top: 6rpx; font-family: monospace; font-size: 18rpx;
+  letter-spacing: .42em; text-indent: .42em; color: #6B9388;
+}
+.breath-hint {
+  margin-top: 20rpx; font-size: 20rpx; letter-spacing: .06em; color: #5D7C74;
+}
 
+/* 底部控件成组排布：避免说明 / 按钮 / 退出三块各自 absolute 导致贴在一起 */
+.calm-controls {
+  position: absolute; left: 56rpx; right: 56rpx;
+  bottom: calc(env(safe-area-inset-bottom) + 108rpx);
+  display: flex; flex-direction: column; align-items: center;
+}
 .calm-tempo {
-  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 300rpx);
-  text-align: center; font-family: monospace; font-size: 20rpx; letter-spacing: .28em; color: #4A5168;
+  margin-top: 0; margin-bottom: 36rpx;
+  text-align: center; font-family: monospace; font-size: 18rpx; letter-spacing: .12em; color: #7c84a6;
+}
+/* 暂停 / 模式切换并排，避免多一个按钮就把底部挤满 */
+.calm-btn-row {
+  display: flex; gap: 20rpx; width: 100%; max-width: 560rpx; margin-bottom: 32rpx;
+}
+.calm-half {
+  flex: 1; min-width: 0; margin-top: 0; padding: 20rpx 0;
+  font-size: 23rpx; letter-spacing: .1em; color: #9ed7c6;
+  border-color: rgba(158,215,198,.32); background: rgba(158,215,198,.05);
 }
 .calm-quit {
-  position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 160rpx);
-  width: auto; font-size: 22rpx; letter-spacing: .26em; color: #6E7694;
+  width: 100%; margin-top: 0;
+  font-size: 22rpx; letter-spacing: .26em; color: #8b90a8;
 }
+/* 暂停时冻结光球与光晕动画，与计时/圆环一致 */
+.breath-orb.paused, .breath-halo.paused { animation-play-state: paused; }
 
 @media (prefers-reduced-motion: reduce) {
-  .comet-spin.go { animation-duration: 9999s; }
-  .comet-spin.go .comet { animation: none; }
-  .trail { display: none; }
+  .breath-orb.in, .breath-orb.hold, .breath-orb.out { animation: none; transform: scale(.92); }
 }
 
 /* 五轮呼吸后的收尾 */
@@ -106,5 +125,7 @@
 }
 @keyframes finPulse { 0%, 100% { transform: scale(1); opacity: .85; } 50% { transform: scale(1.18); opacity: 1; } }
 .fin-title { font-family: 'Songti SC', 'Noto Serif CJK SC', serif; font-size: 48rpx; letter-spacing: .24em; text-indent: .24em; color: #F2EDD9; }
-.fin-sub { margin-top: 24rpx; font-size: 24rpx; letter-spacing: .18em; color: #6E7694; }
+.fin-sub { margin-top: 24rpx; font-size: 24rpx; letter-spacing: .18em; color: #8b90a8; }
 .fin-btn { margin-top: 72rpx; width: 100%; }
+.calm-again { width: 100%; margin-top: 28rpx; }
+.calm-stay { margin-top: 16rpx; color: #8b90a8; }

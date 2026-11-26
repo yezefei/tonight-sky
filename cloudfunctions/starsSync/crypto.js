@@ -28,4 +28,5 @@ function dec(payload) {
   return Buffer.concat([d.update(data), d.final()]).toString('utf8');
 }
 
-module.exports = { enc, dec };
+// 兼容不同云函数里的旧别名：历史代码用 decText 解密，实际就是 dec
+module.exports = { enc, dec, decText: dec };
