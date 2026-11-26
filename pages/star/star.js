@@ -2,6 +2,7 @@
 const store = require('../../utils/store');
 const { navInfo } = require('../../utils/nav');
 const cloudApi = require('../../utils/cloud');
+const config = require('../../utils/config');
 
 Page({
   data: {
@@ -117,11 +118,28 @@ Page({
       .then(res => {
         this.saveLocal({ sent: true, shareId: res.shareId });
         this.setData({ sending: false, shareReady: true });
+        this.askSubscribe(res.shareId);
       })
       .catch(e => {
         this.setData({ sending: false });
         this.toast(e && e.message ? e.message : '网络不太好，稍后再试');
       });
+  },
+
+  // 与星空页一致：模板 ID 配好后，送星时登记「被打开 / 有回音」的一次性订阅
+  askSubscribe(shareId) {
+    const pairs = [[config.TMPL_OPENED, 'star_opened'], [config.TMPL_REPLY, 'reply_arrival']].filter(x => x[0]);
+    if (!pairs.length) return;
+    wx.requestSubscribeMessage({
+      tmplIds: pairs.map(x => x[0]),
+      complete: res => {
+        pairs.forEach(([tmpl, scene]) => {
+          if (res && res[tmpl] === 'accept') {
+            cloudApi.call('notifySubscribe', { scene, shareId }).catch(() => {});
+          }
+        });
+      }
+    });
   },
   onShareAppMessage() {
     if (this.star && this.star.shareId) {

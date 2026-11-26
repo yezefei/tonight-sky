@@ -8,7 +8,7 @@ Page({
     navTop: 88,
     phase: 'loading',   // loading | star | gone | error | thanked
     mine: false, kept: false,
-    text: '', replyText: '',
+    text: '', tag: '', replyText: '',
     reply: '', canReply: false, sending: false, toast: ''
   },
   toastTimer: null,
@@ -26,6 +26,7 @@ Page({
           phase: 'star',
           mine: !!res.mine,
           text: (res.payload && res.payload.text) || '',
+          tag: (res.payload && res.payload.tag) || '',
           replyText: res.replyText || '',
           acked: !!res.ack
         });
@@ -44,7 +45,7 @@ Page({
     if (this.data.kept || !this.data.text) return;
     const list = store.load();
     list.unshift({
-      id: Date.now(), t: Date.now(), tag: '', text: this.data.text,
+      id: Date.now(), t: Date.now(), tag: this.data.tag, text: this.data.text,
       x: 8 + Math.random() * 78, y: 6 + Math.random() * 38,
       received: true
     });

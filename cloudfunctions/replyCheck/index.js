@@ -13,6 +13,11 @@ exports.main = async () => {
     const { OPENID } = cloud.getWXContext();
     if (!OPENID) return { code: 'OK', items: [] };
 
+    // 机会式清理：前台轮询时顺手删掉自己名下已过期的分享（每次最多 20 条）
+    await db.collection('shares')
+      .where({ from: OPENID, expireAt: _.lt(Date.now()) })
+      .limit(20).remove().catch(() => {});
+
     const res = await db.collection('shares')
       .where({ from: OPENID, status: 'replied', replySeen: _.neq(true) })
       .orderBy('repliedAt', 'desc')

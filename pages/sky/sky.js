@@ -45,6 +45,9 @@ Page({
 
   onShow() {
     this.buildSky();
+    // 云同步完成后刷新夜空
+    const app = getApp();
+    app._syncKick = () => this.buildSky();
     // 流星落下来的星：直接替用户拆开
     const g = getApp().globalData;
     if (g.openStarId != null) {
@@ -57,6 +60,11 @@ Page({
       g.autoOrbitShown = true;
       setTimeout(() => this.setData({ orbitOn: true }), 900);
     }
+  },
+
+  onUnload() {
+    const app = getApp();
+    if (app && app._syncKick) app._syncKick = null;
   },
 
   buildSky() {
@@ -131,6 +139,7 @@ Page({
 
   goWrite() { wx.navigateTo({ url: '/pages/write/write' }); },
   goCalm() { wx.navigateTo({ url: '/pages/calm/calm' }); },
+  goSettings() { wx.navigateTo({ url: '/pages/settings/settings' }); },
   // 底部图例：进入对应类型的星志列表页
   goList(e) {
     const type = e.currentTarget.dataset.type || 'worry';
@@ -274,7 +283,7 @@ Page({
       tmplIds: pairs.map(x => x[0]),
       complete: res => {
         pairs.forEach(([tmpl, scene]) => {
-          if (res[tmpl] === 'accept') cloudApi.call('notifySubscribe', { scene, shareId }).catch(() => {});
+          if (res && res[tmpl] === 'accept') cloudApi.call('notifySubscribe', { scene, shareId }).catch(() => {});
         });
       }
     });

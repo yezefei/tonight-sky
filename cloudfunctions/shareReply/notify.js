@@ -19,7 +19,8 @@ async function notifySender(scene, shareId, toOpenid) {
       templateId: tmpl,
       page: 'pages/sky/sky',
       data,
-      miniprogramState: 'developer'
+      // developer / trial / formal，由云函数环境变量 MP_STATE 控制；默认 developer
+      miniprogramState: process.env.MP_STATE || 'developer'
     });
     await db.collection('subscriptions').doc(sub.data[0]._id).remove();
   } catch (e) {

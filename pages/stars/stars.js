@@ -137,7 +137,7 @@ Page({
       success: r => {
         if (!r.confirm) return;
         store.save(store.load().filter(x => x.id !== id), () => {});
-        wx.vibrateShort({ type: 'light' }).catch(() => {});
+        try { wx.vibrateShort({ type: 'light', fail: () => {} }); } catch (e) {}
         this.build();
       }
     });

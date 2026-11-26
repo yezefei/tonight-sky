@@ -16,13 +16,19 @@ exports.main = async (event) => {
     if (!id || !text) return { code: 'BAD_PARAM', message: '参数不全' };
     if (text.length > 2000) return { code: 'BAD_PARAM', message: '太长了，分成几句说吧' };
 
+    const { OPENID } = cloud.getWXContext();
     const doc = await db.collection('shares').doc(id).get().catch(() => null);
     if (!doc || !doc.data) return { code: 'GONE' };
     const s = doc.data;
     if (s.expireAt && s.expireAt < Date.now()) return { code: 'GONE' };
     if (s.status === 'replied') return { code: 'REPLIED', message: '这颗星已经有回音了' };
 
-    const { OPENID } = cloud.getWXContext();
+    // 1 对 1：发送方不能自己回，第一次打开的人被记为接收方，别人不能代回
+    if (OPENID && s.from === OPENID) return { code: 'FORBID', message: '自己的星不用回音' };
+    if (s.receiverOpenid && OPENID && s.receiverOpenid !== OPENID) {
+      return { code: 'FORBID', message: '这颗星是送给别人的' };
+    }
+
     const chk = await checkText(text, OPENID);
     if (!chk.pass) return chk.code === 'CHECK_FAIL'
       ? { code: 'CHECK_FAIL', message: '内容检测服务暂时不可用，稍后再试' }
@@ -30,7 +36,10 @@ exports.main = async (event) => {
 
     const r = enc(text);
     await db.collection('shares').doc(id).update({
-      data: { reply: r.v, replyEnc: r.enc, status: 'replied', repliedAt: Date.now() }
+      data: {
+        reply: r.v, replyEnc: r.enc, status: 'replied', repliedAt: Date.now(),
+        receiverOpenid: s.receiverOpenid || OPENID || ''
+      }
     });
 
     // 通知发送方「有回音了」（通知不带回复内容，只带入口）

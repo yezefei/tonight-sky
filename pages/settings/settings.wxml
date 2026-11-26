@@ -1,0 +1,50 @@
+<view class="page" style="padding-top:{{navTop}}px">
+  <view class="back" hover-class="tap" style="top:{{capTop}}px;height:{{capH}}px" bindtap="goBack">‹</view>
+
+  <view class="eyebrow">PRIVACY · SETTINGS</view>
+  <view class="h2">夜空的存放方式</view>
+  <view class="intro">你可以决定，这些心事只留在这台设备，还是加密存进自己的云空间。</view>
+
+  <view class="card">
+    <view class="row">
+      <view class="row-main">
+        <view class="row-title">云同步</view>
+        <view class="row-desc">开启后，星星加密上传，换手机也能找回来。关闭后只留在这台设备。</view>
+      </view>
+      <switch checked="{{syncOn}}" bindchange="onSyncToggle" color="#FFCE8A" />
+    </view>
+    <view class="row" wx:if="{{syncOn}}">
+      <view class="row-main">
+        <view class="row-title">上次同步</view>
+        <view class="row-desc">{{lastText}}</view>
+      </view>
+      <view class="mini-btn" hover-class="tap" bindtap="syncNow">立即同步</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="row tapable" hover-class="tap" bindtap="exportData">
+      <view class="row-main">
+        <view class="row-title">导出我的星星</view>
+        <view class="row-desc">复制成一段文字到剪贴板，由你自己保管。</view>
+      </view>
+      <view class="arrow">→</view>
+    </view>
+    <view class="row tapable" hover-class="tap" bindtap="clearData">
+      <view class="row-main">
+        <view class="row-title danger">清空本地数据</view>
+        <view class="row-desc">星星、草稿和通知记录都会清掉，无法撤销。</view>
+      </view>
+      <view class="arrow">→</view>
+    </view>
+  </view>
+
+  <view class="privacy">
+    <view class="privacy-title">关于隐私</view>
+    <view class="privacy-line">心事默认只存在这台设备。开启同步后，文字会加密存入云数据库；密钥由服务端保管，因此这不是零知识存储。</view>
+    <view class="privacy-line">送出去的星有 30 天有效期，到期会删除。你可以随时关闭同步、导出或清空。</view>
+  </view>
+
+  <view class="toast {{toast ? 'on' : ''}}">{{toast}}</view>
+  <meteor />
+</view>

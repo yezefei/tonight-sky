@@ -29,7 +29,7 @@ Page({
       let left = secs;
       const show = () => this.setData({ breath, breathTxt: txt, count: String(left).padStart(2, '0') });
       show();
-      wx.vibrateShort({ type: 'light' }).catch(() => {});
+      try { wx.vibrateShort({ type: 'light', fail: () => {} }); } catch (e) {}
       this.countTimer = setInterval(() => { left--; if (left >= 1) show(); }, 1000);
       this.timer = setTimeout(() => { clearInterval(this.countTimer); next(); }, secs * 1000);
     };
@@ -48,7 +48,7 @@ Page({
     clearTimeout(this.timer);
     clearInterval(this.countTimer);
     this.setData({ finished: true, spinning: false, breath: 'out', breathTxt: '', count: '' });
-    wx.vibrateShort({ type: 'medium' }).catch(() => {});
+    try { wx.vibrateShort({ type: 'medium', fail: () => {} }); } catch (e) {}
   },
 
   restart() {

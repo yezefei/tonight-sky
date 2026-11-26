@@ -14,6 +14,9 @@ exports.main = async (event) => {
     const { type } = event;
     const payload = event.payload || {};
     if (!['star', 'card'].includes(type)) return { code: 'BAD_PARAM', message: 'type 不合法' };
+    if (payload.text && String(payload.text).length > 2000) {
+      return { code: 'BAD_PARAM', message: '太长了，分成几句说吧' };
+    }
 
     // 内容安全（红线）：文本先过审再入库
     if (payload.text) {
@@ -37,7 +40,7 @@ exports.main = async (event) => {
         await db.collection('shares').add({
           data: {
             _id: id, type, from: OPENID, payload,
-            reply: '', status: 'waiting',
+            reply: '', status: 'waiting', receiverOpenid: '',
             openedAt: 0, repliedAt: 0,
             createdAt: now, expireAt: now + 30 * 86400e3
           }

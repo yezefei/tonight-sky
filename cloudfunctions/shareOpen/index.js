@@ -31,9 +31,11 @@ exports.main = async (event) => {
     }
 
     // 原子流转 waiting → opened（只生效一次，且仅接收方触发）
+    let effStatus = s.status;
     if (!mine && s.status === 'waiting') {
       await db.collection('shares').where({ _id: id, status: 'waiting' })
-        .update({ data: { status: 'opened', openedAt: Date.now() } });
+        .update({ data: { status: 'opened', openedAt: Date.now(), receiverOpenid: OPENID || '' } });
+      effStatus = 'opened';
       // 发送方订阅过「被打开了」就通知（通知不带内容，只带入口）
       await notifySender('star_opened', id, s.from);
     }
@@ -42,11 +44,12 @@ exports.main = async (event) => {
       code: 'OK',
       mine: !!mine,
       type: s.type,
-      status: s.status === 'waiting' ? 'opened' : s.status,
+      status: effStatus,
       payload: {
         text: s.payload && s.payload.text
           ? decText({ v: s.payload.text, enc: s.payload.enc })
           : '',
+        tag: s.payload && s.payload.tag,
         style: s.payload && s.payload.style,
         lineIdx: s.payload && s.payload.lineIdx
       },

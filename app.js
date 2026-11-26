@@ -1,6 +1,7 @@
 const { CLOUD_ENV } = require('./utils/config');
 const cloudApi = require('./utils/cloud');
 const store = require('./utils/store');
+const sync = require('./utils/sync');
 
 App({
   globalData: {
@@ -19,10 +20,12 @@ App({
     }
     this.checkReplies();
     this.startReplyPoll();
+    if (sync.enabled()) sync.sync();
   },
   onShow() {
     this.checkReplies();
     this.startReplyPoll();
+    if (sync.enabled()) sync.sync();
   },
   onHide() { this.stopReplyPoll(); },
 

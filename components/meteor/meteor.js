@@ -34,7 +34,7 @@ Component({
         this.setData({ phase: 'fall' });
       } else if (name === 'meteorFall') {
         this.setData({ phase: 'chip' });
-        wx.vibrateShort({ type: 'light' }).catch(() => {});
+        try { wx.vibrateShort({ type: 'light', fail: () => {} }); } catch (e) {}
         clearTimeout(this._hideTimer);
         // 15 秒没点就悄悄退场（已记入已播报，不会反复打扰）
         this._hideTimer = setTimeout(() => this.setData({ on: false, phase: '' }), 15000);

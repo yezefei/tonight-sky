@@ -7,7 +7,8 @@
     "pages/echo/echo",
     "pages/calm/calm",
     "pages/stars/stars",
-    "pages/star/star"
+    "pages/star/star",
+    "pages/settings/settings"
   ],
   "window": {
     "navigationStyle": "custom",
